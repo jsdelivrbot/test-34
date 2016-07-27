@@ -1,17 +1,13 @@
 ﻿import 'bootstrap';
-import config from './authConfig';
+
 
 export function configure(aurelia) {
     aurelia.use
       .standardConfiguration()
-      .plugin('aurelia-authentication', (baseConfig)=>{
-          baseConfig.configure(config);
-      });
+      .developmentLogging();
    
     aurelia.use.feature('configs');
-    aurelia.use.plugin('aurelia-api', config => {
-       
-    });
+ 
     aurelia.use.plugin('aurelia-validatejs');     
     aurelia.use.plugin('aurelia-dialog');
     aurelia.use.plugin('aurelia-animator-velocity');

@@ -19,7 +19,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNet.Identity;
-using AureliaTemplate.Web.ADAuthentication;
+
 using log4net.Config;
 using Microsoft.Extensions.PlatformAbstractions;
 
@@ -116,7 +116,7 @@ namespace AureliaTemplate.Web
                 services.AddMvc();
 
                 // Add application services.                
-                services.AddSingleton<IADService, ADService>();
+                //services.AddSingleton<IADService, ADService>();
                 //services.AddTransient<SampleDataInitializer>();
                 
 
