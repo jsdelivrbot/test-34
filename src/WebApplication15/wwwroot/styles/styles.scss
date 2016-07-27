@@ -1,2 +1,9 @@
-﻿body {
+﻿.selector- {
+    &a {
+        float: left;
+     }
+    &a, &b {
+        background: orange;
+    }
 }
+
