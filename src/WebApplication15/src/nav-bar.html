@@ -1,0 +1,63 @@
+﻿<template bindable="auth">
+
+    <header class="hidden-print">
+        <nav class="navbar navbar-inverse navbar-fixed-top col-xs-12 hidden-print" role="navigation">
+            <div class="navbar-inner">
+                <a class="navbar-brand" href="#">
+                    <img height="55" width="156" style="margin-top: -19px;float: left;padding-right:10px;" src="../styles/images/schottlogo2.png" title="Developed for SCHOTT by Lamparth Consulting, LLC" />
+                    <span class="navbar-text navbar-title">
+                        <b class="title">PROD<span style="color:#ED8000;">TRACKER</span></b>
+                    </span>
+                </a>
+
+            </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-main-collapse" style="height: 0px;">
+                <ul class="nav navbar-nav">
+                    <li class="nlightblue ${row.isActive ? 'active' : ''}" 
+                        if.bind="getCurrentUser().role === 'user'"
+                        repeat.for="row of router.navigation | authFilter: isAuthenticated">
+                        <a show.bind="row.title == 'L3'" href.bind="row.href">${row.title}</a>
+                    </li>
+                    <li class="nlightblue ${row.isActive ? 'active' : ''}"
+                         if.bind="getCurrentUser().role[1] === 'admin'" 
+                         repeat.for="row of router.navigation | authFilter: isAuthenticated">
+                        <a href.bind="row.href">
+                        <span show.bind="row.title == 'Settings'">
+                            <i class="fa fa-cog"></i></span>
+                        ${row.title}</a>
+                    </li>
+                </ul>
+
+                <ul if.bind="!isAuthenticated" class="nav navbar-nav navbar-right">
+                    <li><a href="/#/login">Log In</a></li>
+                    <!--<li><a href="/#/signup">Sign up</a></li>-->
+                </ul>
+
+                <ul if.bind="isAuthenticated" class="nav navbar-nav navbar-right">
+
+                    <li style="margin-left:-20px;">
+
+
+
+                        <a href="/#/profile">
+
+                            ${getCurrentUser().displayName} &nbsp;<span show.bind="getCurrentUser().role[1] === 'admin'">
+                                <i class="glyphicon glyphicon-star admin-star"></i>
+                            </span>
+                        </a>
+                    </li>
+                    <li><a href="/#/logout">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+</template>

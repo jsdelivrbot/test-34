@@ -1,0 +1,651 @@
+﻿<template>
+
+    <section class="top-section">
+        <div class="row smaller-font">
+            <div class="col-md-3">
+
+                <div data-easein="fadeIn" class="panel panel-default" data-intro='Choose which mode you want to work in, QC or Shipping.'>
+
+                    <div class="panel-heading">
+                        Mode
+                    </div>
+                    <div class="panel-body pointer">
+
+                        <div class="row" style="margin-left:15px;">
+                            <label repeat.for="mode of modeOptions" class="clickable">
+                                <input change.delegate="setSelectedMode()" disabled.bind="trayLocked" type="radio" value.bind="mode" checked.bind="$parent.selectedMode" />
+                                <span class.bind="mode == $parent.selectedMode ? 'mode-filter': ''" style="margin-right:40px;font-size:1.3em;">${mode}</span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel panel-primary">
+                    <div class="panel-heading" if.bind="skel.vars.mobile">
+                        Selected Part
+                    </div>
+
+                    <div class="panel-body">
+                        <form style="margin:2px;padding:2px;">
+
+                            <div if.bind="currentUser.defaultPartTypeId == 0">
+
+                                <label>Part Type &nbsp;</label><i id="locked-in-glyph" class="glyphicon glyphicon-lock" if.bind="lockedin"></i><br />
+                                <select id="selectedPartTypeId" class.bind="!selectedPartTypeId ? 'alert-danger' : ''" class="form-control" disabled.bind="partLocked" value.bind="selectedPartTypeId"
+                                        change.delegate="getAllPartsByCustomerAndPartType()"
+                                        style="width: 100%">
+                                    <option value="">-- select part type --</option>
+                                    <option model.bind="p.PartTypeId" repeat.for="p of allPartTypes" value.bind="p.PartTypeId">
+                                        ${p.Name}
+                                    </option>
+                                </select>
+
+                            </div>
+                            <div if.bind="currentUser.defaultPartTypeId">
+                                <h4 title="${selectedPartType.Description}">${selectedPartType.Name}</h4>
+                            </div>
+
+                            <div if.bind="selectedPartTypeId">
+                                <br />
+                                <label>Part # &nbsp;</label><i style="font-size:small;" class="glyphicon glyphicon-lock" if.bind="lockedin"></i><br />
+                                <div class="input-group">
+                                    <select class.bind="!selectedPartId ? 'alert-danger' : ''" data-intro='Next, select a Part #'
+                                            class="form-control large-font" id="selectedPartId"
+                                            disabled.bind="partLocked" value.bind="selectedPartId"
+                                            change.delegate="setSelectedPart()"
+                                            style="width: 100%">
+                                        <option value="">-- select part # --</option>
+                                        <option model.bind="p.PartId" repeat.for="p of allParts" value.bind="p.PartId">
+                                            ${p.PartNumber}
+                                        </option>
+                                    </select>
+
+                                    <span class="input-group-btn" if.bind="!trayLocked" data-intro='When the lock sign is visible the part selection is locked in. You can click on the lock sign to unlock the part and choose another.'>
+                                        <button if.bind="selectedPartNumber" class="btn btn-default" type="button" click.delegate="togglePartSelection()">
+                                            <i class="fa fa-lock" style="color:#CC2CFF;"></i>
+                                        </button>
+                                        <button if.bind="!selectedPartNumber" class="btn btn-default" type="button" click.delegate="togglePartSelection()">
+                                            <i class="fa fa-unlock schott-orange"></i>
+                                        </button>
+                                    </span>
+
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Search panel -->
+                <div class="panel panel-info" show.bind="selectedMode !== 'Shipping'" data-hint="search for stuff!">
+                    <div class="panel-heading">
+                        Search
+                    </div>
+                    <div class="panel-body">
+                        <div class="row" style="margin-left:5px;">
+                            <label repeat.for="search of searchOptions">
+                                <input type="radio" name="clrs" value.bind="search" checked.bind="$parent.selectedSearch" />
+                                <span style="margin-right:10px;">${search}</span>
+                            </label>
+                        </div>
+
+                        <form class="input-group" style="margin-top:7px;" submit.delegate="search()">
+
+                            <input keyup.delegate="search() & debounce: 800" id="searchinput" disabled.bind="showError || trayLocked || !selectedPartId" type="search" class="form-control" value.bind="searchItem" />
+
+                            <span if.bind="searchResults.length == 0" click.delegate="search()" id="searchclear" class="input-group-addon glyphicon glyphicon-search clickable"></span>
+                            <span if.bind="searchResults.length > 0" click.delegate="clearSearchInput()" id="searchclear" class="input-group-addon glyphicon glyphicon-remove-circle clickable"></span>
+
+                            <input type="submit" style="display:none;" />
+
+                        </form>
+                        <span class="help-block" innerHtml.bind="searchMessage"></span>
+                        <div show.bind="searchResults.length > 0" style="overflow:scroll;height:200px;">
+                            <table class="table table-bordered table-condensed" style="margin-top:15px;">
+                                <thead>
+                                    <tr>
+                                        <th>Tray</th>
+                                        <th>Date Created</th>
+                                    </tr>
+                                </thead>
+                                <colgroup>
+                                    <col span="1" />
+                                    <col span="1" />
+                                </colgroup>
+                                <tbody style="cursor:pointer;">
+                                    <tr class="text-info" repeat.for="tray of searchResults" click.delegate="setSerialNumbersForTray(tray.TrayNumber)">
+                                        <td>${tray.TrayNumber}</td>
+                                        <td>${tray.DateCompleted | dateFormat: 'MM/DD/YYYY'}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- footer panel -->
+                <div class="col-sm-12">
+
+                    <div class="footer-content" style="margin-top:100px;">
+
+                        <a href="#" click.delegate="showIntroHelp()">
+                            <span><i class="fa fa-life-bouy"></i>&nbsp;Help</span>
+                        </a>
+                        <!--<p class="text-muted pull-right"><a href="http://lamparth.com" target="_blank"> ${currentYear} SCHOTT, Inc. & Lamparth.com</a></p>-->
+                    </div>
+                </div>
+            </div>
+
+            <!-- notifications -->
+            <div class="col-md-7" if.bind="!selectedPartTypeId">
+
+                <p class="alert alert-info"><i class="fa fa-info-circle"></i>&nbsp;Please select a <b>PartType</b> to get started.</p>
+            </div>
+            <div class="col-md-7" if.bind="selectedPartTypeId && !selectedPartId">
+                <p class="alert alert-info"><i class="fa fa-info-circle"></i>&nbsp;Please select a <b>Part</b> from the list.</p>
+            </div>
+
+            <!-- Data entry tray grid -->
+            <div class="col-md-7">
+                <form role="form" submit.delegate="saveTray()" class.bind="!selectedPartNumber ? 'panel-tray-hidden' : ''">
+                    <div id="panel-tray" class="panel panel-default">
+                        <div class="panel-heading">
+                            <div if.bind="selectedPartNumber">
+
+                                <div show.bind="selectedMode === 'Shipping' && viewingAvailableTrays">
+                                    <span id="tray-number-label">Tray Number:</span>
+
+                                    <input maxlength="10" id="trayNumberShipping" focus.bind="trayNumberHasFocus" keyup.delegate="scanCheck($event)" type="text" disabled.bind="trayLocked || !selectedPartNumber" value.bind="trayNumber" class="text-primary" />
+
+                                    <button class="btn btn-primary add-tray" type="button" click.delegate="addTrayToSelectedTraysList()">Add Tray</button>
+
+                                    <span if.bind="showError" class="msg">
+                                        <span class="error label label-danger">Error</span>&nbsp;
+                                        <span if.bind="errorMessage" class="text-danger">
+                                            ${errorMessage}
+                                        </span>
+                                    </span>
+
+                                </div>
+
+                                <div show.bind="selectedMode === 'Shipping' && viewingShippedTrays">
+                                    <h4><i class="glyphicon glyphicon-time"></i>&nbsp;Past Shipments</h4>
+                                </div>
+
+                                <div show.bind="selectedMode !== 'Shipping'">
+                                    <span id="tray-number-label">Tray Number:</span>
+
+                                    <!-- Tray number input -->
+                                    <input maxlength="10" id="trayNumber" focus.bind="trayNumberHasFocus" keyup.delegate="scanCheck($event)" type="text" disabled.bind="trayLocked || !selectedPartNumber" value.bind="trayNumber" class="text-primary" data-intro='Scan the new or existing tray number here' />
+
+                                    <button id="setButton" click.delegate="setTrayNumber()" if.bind="!trayLocked" class="btn btn-primary add-tray" type="button">
+                                    Set
+                                    </button>
+
+                                    <span show.bind="!showError && !trayNumber" class="msg">
+
+                                        <span class="alert alert-info" style="padding:4px;"><i class="fa fa-arrow-left"></i>&nbsp;Please scan or type a tray number</span>
+
+                                    </span>
+                                    <span class="text-info" if.bind="trayNumber">
+
+
+                                        &nbsp;&nbsp;
+                                        <span if.bind="tray.StockDate && !showError"><b><i class="fa fa-truck"></i>&nbsp;Shipped on</b> ${tray.StockDate | dateFormat: 'MM/DD/YY hh:mm a'} by ${tray.StockUserName}</span>
+                                        <!--<span if.bind="!tray.StockDate && !showError">Tray created on ${tray.DateCompleted | dateFormat: 'MM/DD/YY hh:mm a'}</span>-->
+
+                                    </span>
+                                    <span if.bind="showError" class="msg">
+
+                                        <span class="error label label-danger">Error</span>&nbsp;
+                                        <span if.bind="errorMessage" class="text-danger">
+                                            ${errorMessage}
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="shell" class="panel-body tray-body" class.bind="selectedMode === 'QC' ? 'short-shell-height' : 'tall-shell-height'" style="overflow:scroll; padding-left:2px;padding-right:2px;">
+
+                            <div class="col-md-12" data-intro='This is the area to enter serial numbers in the correct position of where the part is in the tray'>
+                                <div class="flip">
+                                    <div class="card">
+
+                                        <!-- QC Side -->
+                                        <div class="face front">
+
+                                            <h2 if.bind="!selectedPartId">
+                                                <i class="fa fa-clock-o"></i> Awaiting Part selection...
+                                            </h2>
+
+                                            <!-- Tray -->
+                                            <div id="trayDiv" show.bind="selectedPartNumber">
+                                        
+                                                <div repeat.for="j of part.Rows">
+                                                    <div id="row" class.bind="(j % 2) == 0 && $parent.part.IsStaggered ? 'staggered-odd' : ''" class="col-xs-12 background">
+
+                                                        <div id="cell" repeat.for="i of $parent.part.Columns" class="col-xs-12 background" style="padding:6px;width:130px;">
+
+                                                            <div class="input-group input-group-sm">
+                                                                <span class="input-group-addon clickable" id="sizing-addon1">${(i + (j * $parent.$parent.part.Columns)) + 1}</span>
+                                                                <input keypress.delegate="enterToTab($event)" disabled.bind="!$parent.$parent.trayLocked"
+                                                                       id="serial_${(i + (j * $parent.$parent.part.Columns)) + 1}" 
+                                                                       maxlength="${$parent.$parent.serialNumberLength}"
+                                                                       type="text"
+                                                                       class="form-control serial-text"
+                                                                       aria-describedby="sizing-addon1" value="" focusout.trigger="$parent.$parent.validate($event)">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Shipping Side -->
+                                        <div class="face back">
+                                            <div class="col-md-12">
+                                                <ul class="nav nav-tabs">
+                                                    <li class="active"><a click.delegate="showAvailableTrayView()" data-toggle="tab" href="#menu1">Available</a></li>
+                                                    <li><a click.delegate="showShippedTrayView()" data-toggle="tab" href="#menu2"><i class="fa fa-truck"></i>&nbsp;Shipments</a></li>
+                                                </ul>
+
+                                                <!-- Available Trays -->
+                                                <div class="tab-content">
+                                                    <div id="menu1" class="tab-pane fade in active">
+                                                        <div class="col-md-4" style="height:265px;overflow-y:scroll;">
+                                                            <h4>Available Trays</h4>
+                                                          
+                                                            <h3 show.bind="allTraysAvailableForStock.length == 0" class="text-info">no trays found.</h3>
+
+                                                            <table class="table table-condensed">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr repeat.for="tray of allTraysAvailableForStock">
+                                                                        <td title="created on ${tray.DateCompleted |  dateFormat}">
+                                                                            <input class="selectedTrays" change.delegate="$parent.setSelectedTrays($event, tray)" type="checkbox" value.bind="tray.TrayNumber" />
+
+                                                                            <b># ${tray.TrayNumber}</b>
+                                                                            <span class="text-muted">${tray.IsPartial ? '(partial)' : ''}</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                        <!-- Selected Trays -->
+                                                        <div class="col-md-8">
+                                                            <h4 class="schott-orange" if.bind="allTraysAvailableForStock.length > 0">
+                                                                Selected Trays (${selectedTrays.length})
+                                                                <span style="float:right"><span class="available-trays">Qty: <b>${selectedTraysSerials.length}</b></span></span>
+                                                            </h4>
+
+                                                            <div class="selected-trays">
+                                                                <ul style="list-style:none;padding-left:0">
+                                                                    <li repeat.for="trayNumber of selectedTrays">
+                                                                        <div class="panel-group" id="accordion">
+
+                                                                            <div class="panel panel-default">
+                                                                                <div class="panel-heading">
+                                                                                    <h4 class="panel-title" style="font-size:15px;">
+                                                                                        <a data-toggle="collapse" data-parent=".panel-group" href="#${trayNumber}">
+                                                                                            # ${trayNumber}
+                                                                                        </a>
+                                                                                    </h4>
+                                                                                </div>
+                                                                                <div id="${trayNumber}" class="panel-collapse collapse">
+                                                                                    <div class="panel-body">
+                                                                                        <table class="table table-condensed table-hover">
+                                                                                            <thead>
+                                                                                                <tr>
+                                                                                                    <td>Serial #</td>
+                                                                                                    <td>Position #</td>
+                                                                                                    <td>Date</td>
+                                                                                                    <td>Workorder #</td>
+                                                                                                    <td>Tray #</td>
+                                                                                                </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                                <tr repeat.for="serial of selectedTraysSerials | sort: 'TrayPosition'">
+                                                                                                    <td if.bind="serial.TrayNumber == trayNumber"><span>${serial.SerialNumber}</span></td>
+                                                                                                    <td if.bind="serial.TrayNumber == trayNumber"><span>${serial.TrayPosition}</span></td>
+                                                                                                    <td if.bind="serial.TrayNumber == trayNumber"><span>${serial.DateAdded | dateFormat}</span></td>
+                                                                                                    <td if.bind="serial.TrayNumber == trayNumber"><span>${serial.WorkorderNumber ? serial.WorkorderNumber : 'NA'}</span></td>
+                                                                                                    <td if.bind="serial.TrayNumber == trayNumber"><span># ${trayNumber}</span></td>
+                                                                                                </tr>
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+
+
+
+                                                                        </div>
+
+
+
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-12 border-schott-orange">
+                                                            <br />
+                                                            <div class="col-md-12" show.bind="viewingAvailableTrays">
+                                                                <div class="form-group">
+                                                                    <div>
+                                                                        <label for="inputComments">Comments (optional)</label><br />
+                                                                        <textarea readonly.bind="selectedTraysSerials.length === 0" name="inputComments" value.bind="comments" cols="60" rows="6"></textarea>
+                                                                        <span style="float:right">
+                                                                            <br />
+
+                                                                            <button disabled.bind="selectedTraysSerials.length === 0" click.delegate="addToStock()" type="button" class="btn btn-lg btn-success">
+                                                                                SHIP IT!
+                                                                            </button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Date Selection -->
+                                                    <div id="menu2" class="tab-pane fade">
+                                                        <div class="form-inline text-center">
+                                                            <div class="form-group">
+                                                                <label for="startDate">Start:</label>
+                                                                <input value.bind="stockSearchStartDate" class="form-control" id="startDate" type="date" />
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="endDate">End:</label>
+                                                                <input value.bind="stockSearchEndDate" class="form-control" id="endDate" type="date" />
+                                                            </div>
+                                                            <button type="button" disabled.bind="!stockSearchStartDate || !stockSearchEndDate" click.delegate="getStockByDates()" class="form-control btn btn-info">
+                                                                <i class="fa fa-search"></i>
+                                                            </button>
+
+                                                            <p class="text-danger" if.bind="showNoResultsFound"><br />Sorry, no results found in this date range.</p>
+                                                        </div>
+
+                                                        <!-- Selected Stock -->
+                                                        <div class="col-md-6" style="margin-top:2%;height:265px;">
+                                                            <h4 class="schott-orange">
+                                                                Shipments (${stockSearchResults.length})
+                                                            </h4>
+                                                            <div class="panel panel-primary stock-search-results" style="margin-bottom:0;height:300px;">
+                                                                <table if.bind="stockSearchResults.length > 0" class="table table-condensed table-hover">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <td>Date</td>
+                                                                            <td>Trays</td>
+                                                                            <td>Picked by</td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr title="${stock.Comments}" class="stock-row" id="${stock.StockId}" click.delegate="getStockSearchTrayResults(stock.StockId)"
+                                                                            repeat.for="stock of stockSearchResults | sort: 'StockId'">
+                                                                            <td><span>${stock.StockDate | dateFormat}</span></td>
+                                                                            <td><span>${stock.TrayCount}</span></td>
+                                                                            <td><span>${stock.UserName}</span></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Selected Trays -->
+                                                        <div class="col-md-6" style="margin-top:2%;">
+                                                            <h4 class="schott-orange">
+                                                                Trays (${stockSearchTrayResults.length})
+                                                            </h4>
+                                                            <div class="panel panel-primary stock-search-results" style="height:300px;">
+                                                                <table if.bind="stockSearchTrayResults.length > 0" class="table table-condensed table-hover">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <td>Tray #</td>
+                                                                            <td>Date Completed</td>
+                                                                            <td>Is Partial?</td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr title="${tray.Comments}" class="tray-row" id="${tray.TrayNumber}" click.delegate="getStockSearchSerialResults(tray)" repeat.for="tray of stockSearchTrayResults | sort: 'TrayNumber'">
+                                                                            <td><span>${tray.TrayNumber}</span></td>
+                                                                            <td><span>${tray.DateCompleted | dateFormat}</span></td>
+                                                                            <td><span>${tray.IsPartial ? 'Yes' : 'No'}</span></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Selected Serials -->
+                                                        <div class="col-md-12">
+                                                            <br />
+                                                            <h4 class="schott-orange">
+                                                                Serials (${stockSearchSerialResults.length})
+                                                            </h4>
+                                                            <div class="panel panel-primary stock-search-serial-results">
+                                                                <table if.bind="stockSearchSerialResults.length > 0" class="table table-condensed table-hover">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <td>Serial #</td>
+                                                                            <td>Marking Date</td>
+                                                                            <td>Position</td>
+                                                                            <td>Workorder #</td>
+                                                                        </tr>
+
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr class="serial-row" repeat.for="serial of stockSearchSerialResults | sort: 'SerialNumber'">
+                                                                            <td><span>${serial.SerialNumber}</span></td>
+                                                                            <td><span>${serial.MarkingDate | dateFormat}</span></td>
+                                                                            <td><span>${serial.TrayPosition}</span></td>
+                                                                            <td><span>${serial.WorkorderNumber}</span></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <!-- Options -->
+                                                        <div class="col-md-12" if.bind="stockSearchResults.length > 0">
+                                                            <br /><div class="col-md-4">
+                                                                <button click.delegate="clearSelectedTray()" if.bind="currentUser.role[1] === 'admin'" type="button" class="btn btn-link"><span class="text-warning">Clear Tray</span></button>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <button click.delegate="reprintStock()" type="button" class="btn btn-lg alt-style-button"><i class="fa fa-download"></i>&nbsp;Reprint Shipment</button>
+                                                            </div>
+
+
+                                                            <div class="col-md-2">
+                                                                <button click.delegate="clearSelectedStock()" if.bind="currentUser.role[1] === 'admin'" type="button" class="btn btn-link text-danger"><span class="text-danger">Clear Shipment</span></button>
+                                                            </div>
+
+                                                        </div>
+
+
+
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <!-- end Shipping Side -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <br />
+                    <div class="col-md-12" style="padding:0;margin-bottom:50px;" if.bind="trayLocked && !showError">
+                        <div class="col-xs-6 col-md-4" style="padding-left:0;">
+                            <button type="submit" class="btn btn-primary hidden-print">
+                                Save Tray
+                            </button>
+                            <span show.bind="showSavingMessage" class="text-success text-muted">saving...<i class="glyphicon glyphicon-ok"></i></span>
+
+                        </div>
+                        <div class="col-xs-4 col-md-4 col-xs-pull-1 col-md-push-1 col-lg-push-1" style="margin-bottom:20px;">
+
+                            <button type="button" click.delegate="printTray()" class="btn btn-info hidden-print">
+                                <i class="glyphicon glyphicon-print"></i>&nbsp; Print
+                            </button>
+                            <div if.bind="trayLocked && trayValid">
+                                <div class="help-block">
+                                    <!--tray count: ${serialInTrayCount} / ${part.TraySize}-->
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-xs-2 col-md-4" style="padding-right:0;">
+                            <button type="button" disabled.bind="showError" style="float:right;"
+                                    click.delegate="confirmTray()" class="btn btn-success hidden-print"
+                                    class.bind="showError ? 'btn-danger' : 'btn-success'">
+                                <i class="glyphicon glyphicon-check"></i> Save & Close Tray
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div style="margin-bottom:50px;">
+
+
+                        <div if.bind="showError" class="col-md-12 text-danger text-center" style="margin-bottom:1%;">
+                            <h4><i class="glyphicon glyphicon-warning-sign"></i> Warning - Please correct the errors in the tray.</h4>
+                            &nbsp;
+
+                        </div>
+                        <div if.bind="!trayLocked && tray.TrayNumber && trayNumber && selectedMode !== 'Shipping' " class="text-center" style="margin-bottom:1%;">
+
+                            <button type="button" click.delegate="editTray()" class="btn btn-warning">
+                                Edit this Tray
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+
+            <!-- Tray list column -->
+            <div class="col-md-2">
+                <div if.bind="selectedPartNumber" class="panel panel-default">
+                    <div class="panel-body">
+                        <span class="selected-part-number" data-intro='This is the currently selected part number.'>
+                            <span style="color:#CC2CFF;text-align:center;font-weight:bold;" id="selectedPartNumber">
+                                ${selectedPartNumber}
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div if.bind="selectedMode !== 'Shipping' && selectedPartNumber" class="panel panel-default" style="margin-top:-10px;">
+                    <div class="panel-body" style="padding:5px;">
+
+                        <h6 class="text-center"><b>Trays</b></h6>
+                        <table class="table table-borderd table-condensed" data-intro='Here are all the trays for this part number, grouped by the date is was entered.'>
+
+                            <tbody style="cursor:pointer;">
+
+                                <tr click.delegate="showTodayTrays()" class.bind="trayView == 'Today' ? 'highlighted-row': ''">
+                                    <td>
+
+                                        Today:
+
+                                    </td>
+                                    <td>
+                                        ${traysToday.length}
+                                    </td>
+                                </tr>
+
+                                <tr click.delegate="showThisWeeksTrays()" class.bind="trayView == 'This Week' ? 'highlighted-row': ''">
+                                    <td>
+
+                                        This Week:
+
+                                    </td>
+                                    <td>
+                                        ${traysThisWeek.length}
+                                    </td>
+                                </tr>
+
+                                <tr click.delegate="showPartialTrays()" class.bind="trayView == 'Partial Trays' ? 'highlighted-row': ''">
+                                    <td>
+
+                                        Partial Trays:
+
+                                    </td>
+                                    <td>
+                                        ${partialTrays.length}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div if.bind="selectedMode !== 'Shipping' && selectedPartNumber" class="col-md-12 label label-primary">
+                    ${trayView} <i class="glyphicon glyphicon-arrow-down "></i>
+                </div>
+
+                <div if.bind="selectedMode !== 'Shipping' && selectedPartNumber" id="tray-list" class="panel panel-primary clickable">
+
+                    <table if.bind="trayLocked" class="table table-bordered table-condensed table-striped"
+                           data-intro='You can select a tray from this list to reprint or edit, except when you are currently updating a tray.'>
+
+                        <tr repeat.for="tray of trays" class.bind="trayNumber === tray.TrayNumber ? 'highlight-tray': ''">
+
+                            <td>
+                                <b># ${tray.TrayNumber}</b> <span class="text-muted" if.bind="tray.IsPartial">(partial)</span>
+                                <span title="SHIPPED" class="text-muted" if.bind="tray.StockId">
+                                    &nbsp;<i class="fa fa-truck"></i>
+                                </span>
+                                <br />
+                                <span class="text-muted">${tray.DateCompleted | dateFormat: 'MM/DD/YY'}</span> - ${tray.DisplayName}
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <table if.bind="!trayLocked" class="table table-bordered table-condensed table-hover">
+
+
+                        <tr repeat.for="tray of trays" class.bind="trayNumber === tray.TrayNumber ? 'highlight-tray': ''">
+
+                            <td click.delegate="$parent.setSerialNumbersForTray(tray.TrayNumber)">
+
+                                <b style="color:blue;"># ${tray.TrayNumber} </b>
+
+                                <span class="text-muted" if.bind="tray.IsPartial">(partial)</span>
+                                <span class="text-muted" if.bind="tray.StockId">
+                                    &nbsp;<i class="fa fa-truck"></i>
+                                </span>
+
+                                <br />
+                                <span class="text-muted">${tray.DateCompleted | dateFormat: 'MM/DD/YY'}</span> - ${tray.DisplayName}
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+            <!-- end Tray list column -->
+        </div>
+    </section>
+</template>

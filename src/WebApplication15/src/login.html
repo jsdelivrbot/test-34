@@ -1,0 +1,49 @@
+﻿<template>
+    <div class="row">
+        <br />
+        <div class="col-xs-push-1 col-xs-5">
+            <section class="au-animate top-section">
+                <p class="alert alert-info alert-dismissable" if.bind="emailConfirmed">Thank you for confirming your email!</p>
+                <form role="form" submit.delegate="login()">
+                    <h2>${heading}</h2>
+                    <h4>Please enter your Windows login credentials.</h4>
+                    <hr />
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" keyup.delegate="hideLoginError()" value.bind="username" class="form-control" id="username" placeholder="Username">
+                        <p class="help-block text-muted">this is your username only, without domain "SCHOTT\"</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" keyup.delegate="hideLoginError()" value.bind="password" class="form-control" id="password" placeholder="Password">
+                        <p class="help-block text-muted">this is your windows login password</p>
+                     </div>
+                    <button type="submit" disabled.bind="!loginComplete" class="btn btn-primary col-xs-6">${!loginComplete ? 'Logging in...' : 'Log In'}<span if.bind="!loginComplete">&nbsp; <span class="glyphicon glyphicon-refresh glyphicon-spin"></span></span></button>
+                    <!--<div class="col-xs-3">
+                        <button class="btn btn-link" click.delegate="forgotPassword()">
+                            Forgot your password?
+                        </button>
+                    </div>-->
+                    <br />
+
+
+                </form>
+
+                <hr>
+
+                
+                <!--<div class="col-xs-12">
+                    Don’t have an account?<button class="btn btn-link" click.delegate="signup()">Sign Up</button>
+                </div>-->
+                
+                <hr>
+
+                <div class="col-xs-12">
+
+                    <div class="alert alert-danger" if.bind="loginError">${loginError}</div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+</template>
