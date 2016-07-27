@@ -2,22 +2,22 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
-using AureliaTemplate.Web.Models;
+using MRB.Web.Models;
 using Microsoft.AspNet.Identity;
 using System.Security.Claims;
 using Microsoft.AspNet.Mvc.ModelBinding;
 using System.Collections;
 using System.IdentityModel.Tokens.Jwt;
-using AureliaTemplate.Web.Services.Auth;
-using AureliaTemplate.Web.Services.Email;
+using MRB.Web.Services.Auth;
+using MRB.Web.Services.Email;
 using Microsoft.AspNet.Hosting;
-using AureliaTemplate.Web.Services;
+using MRB.Web.Services;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace AureliaTemplate.Web.Controllers
+namespace MRB.Web.Controllers
 {
     [Route("api/[controller]")]
     public class AuthController : BaseController

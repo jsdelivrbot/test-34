@@ -1,6 +1,6 @@
 ﻿using System.IdentityModel.Tokens;
 
-namespace AureliaTemplate.Web.Services.Auth
+namespace MRB.Web.Services.Auth
 {
     public class TokenAuthOptions
     {

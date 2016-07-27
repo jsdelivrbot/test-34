@@ -2,7 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace AureliaTemplate.Web.Services.Auth
+namespace MRB.Web.Services.Auth
 {
     public class RSAKeyUtils
     {

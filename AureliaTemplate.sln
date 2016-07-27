@@ -10,11 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AureliaAuthTemplate.Web", "src\WebApplication15\AureliaAuthTemplate.Web.xproj", "{49129617-53B6-4554-9BED-B44A76AC6C2F}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MRB.Web", "src\WebApplication15\MRB.Web.xproj", "{49129617-53B6-4554-9BED-B44A76AC6C2F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{99FDD4DB-94C0-4557-AD4D-CD3767F939EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AureliaTemplate.Test", "AureliaTemplate.Tests\AureliaTemplate.Test.csproj", "{A5061600-D3E4-46EB-8CD6-89A121C4205F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRB.Test", "AureliaTemplate.Tests\MRB.Test.csproj", "{A5061600-D3E4-46EB-8CD6-89A121C4205F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AureliaTemplate.Web.Controllers
+namespace MRB.Web.Controllers
 {
     public class TokenDto
     {

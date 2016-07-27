@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AureliaTemplate.Tests
+namespace MRB.Tests
 {
     [TestClass]
     public class UnitTest1

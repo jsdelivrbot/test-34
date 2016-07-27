@@ -5,12 +5,12 @@ using System.Net;
 using log4net;
 using System.Reflection;
 
-namespace AureliaTemplate.Web.Controllers
+namespace MRB.Web.Controllers
 {
     [Route("api/[controller]")]
     public class BaseController : Controller
     {        
-        public static readonly string LogPath = @"C:\inetpub\wwwroot\AureliaTemplate_Logs\";
+        public static readonly string LogPath = @"C:\inetpub\wwwroot\MRB_Logs\";
 
         public static readonly ILog Log = LogManager.GetLogger(
             MethodBase.GetCurrentMethod().DeclaringType);

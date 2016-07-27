@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 
-namespace AureliaTemplate.Web.Services
+namespace MRB.Web.Services
 {
     public interface IADService
     {

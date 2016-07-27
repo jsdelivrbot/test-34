@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 
-namespace AureliaTemplate.Web.Models
+namespace MRB.Web.Models
 {
     public class ApplicationUser : IdentityUser
     {

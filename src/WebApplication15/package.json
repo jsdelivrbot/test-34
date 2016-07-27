@@ -1,6 +1,6 @@
 {
-  "name": "aureliatemplate",
-  "description": "aureliatemplate",
+  "name": "MRB",
+  "description": "MRB",
   "author": "Dan Bergman <dan.bergman@guest.us.schott.com>",
   "main": "dist/main.js",
   "repository": {

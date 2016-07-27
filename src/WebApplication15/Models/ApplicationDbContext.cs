@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Data.Entity;
 
-namespace AureliaTemplate.Web.Models
+namespace MRB.Web.Models
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
         {
-            //  Database.EnsureCreated();
+            Database.EnsureCreated();
         }
 
         // examples:
@@ -19,13 +19,14 @@ namespace AureliaTemplate.Web.Models
         //}
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-//#if (DEBUG)
-//            options.UseSqlServer(@"Server=susxsxsweb2;Database=ProdTracker_TEST;Trusted_Connection=True;MultipleActiveResultSets=true");
-//            // options.UseSqlServer(@"Server=(localdb)\MSSQLLocalDb;Database=ProdTracker;Trusted_Connection=True;MultipleActiveResultSets=true");
-//#else
-//            options.UseSqlServer(@"Server=susxsxsweb2;Database=ProdTracker;Trusted_Connection=True;MultipleActiveResultSets=true");
-//#endif
-           
+            options.UseSqlServer(@"Server=SUSXSXM700245\SQLEXPRESS;Database=MRB;Trusted_Connection=True;MultipleActiveResultSets=true");
+            //#if (DEBUG)
+            //            options.UseSqlServer(@"Server=susxsxsweb2;Database=ProdTracker_TEST;Trusted_Connection=True;MultipleActiveResultSets=true");
+            //            // options.UseSqlServer(@"Server=(localdb)\MSSQLLocalDb;Database=ProdTracker;Trusted_Connection=True;MultipleActiveResultSets=true");
+            //#else
+            //            options.UseSqlServer(@"Server=susxsxsweb2;Database=ProdTracker;Trusted_Connection=True;MultipleActiveResultSets=true");
+            //#endif
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

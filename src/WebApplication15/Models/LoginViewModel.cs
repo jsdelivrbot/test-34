@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AureliaTemplate.Web.Models
+namespace MRB.Web.Models
 {
     public class LoginViewModel
     {
@@ -11,8 +11,6 @@ namespace AureliaTemplate.Web.Models
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         public string password { get; set; }
-
-
 
     }
 }

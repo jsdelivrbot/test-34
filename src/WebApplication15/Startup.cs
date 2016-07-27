@@ -9,25 +9,25 @@ using System.IO;
 using log4net.Config;
 using Microsoft.Extensions.PlatformAbstractions;
 using System.Security.Claims;
-using AureliaTemplate.Web.Services.Auth;
+using MRB.Web.Services.Auth;
 using System.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using System.Diagnostics;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Authentication.JwtBearer;
-using AureliaTemplate.Web.Services;
-using AureliaTemplate.Web.Services.Email;
+using MRB.Web.Services;
+using MRB.Web.Services.Email;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
 using Newtonsoft.Json;
 using Microsoft.AspNet.Diagnostics;
 using Microsoft.AspNet.Identity;
-using AureliaTemplate.Web.Models;
+using MRB.Web.Models;
 using Microsoft.Data.Entity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 [assembly: XmlConfigurator(Watch = false)]
-namespace AureliaTemplate.Web
+namespace MRB.Web
 {
     public class AuthMessageSender : IEmailSender
     {
