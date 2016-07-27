@@ -1,10 +1,17 @@
-﻿
+﻿import config from './auth.config';
+
 export function configure(aurelia) {
     aurelia.use
       .standardConfiguration()
-      .developmentLogging();
+      .developmentLogging()
+      .plugin('aurelia-authentication', (baseConfig)=>{
+          baseConfig.configure(config);
+      });
    
-    aurelia.use.feature('configs');
+    aurelia.use.feature('configs');  
+    aurelia.use.plugin('aurelia-api', config => {
+       
+    });
  
     aurelia.use.plugin('aurelia-validatejs');     
     aurelia.use.plugin('aurelia-dialog');

@@ -56,7 +56,7 @@ export class Login {
 
             localStorage.setItem( 'profile-photo', response.image );
 
-            var token = localStorage.getItem( 'aurelia_authentication' );
+            var token = localStorage.getItem( 'name-of-project' );
             this.currentUser = this.session.getCurrentUser( response.id_token );
 
            

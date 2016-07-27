@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet5-aureliatemplate-213e1c20-d31a-4ff4-9909-59794cc23b4e",
   "version": "1.0.0-*",
   "compilationOptions": {
@@ -31,7 +31,9 @@
     "Microsoft.AspNet.Authentication.OpenIdConnect": "1.0.0-rc1-final",
     "Microsoft.AspNet.WebSockets.Server": "1.0.0-rc1-final",
     "log4net": "2.0.5",
-    "Microsoft.Owin.Cors": "3.0.1"
+    "Microsoft.Owin.Cors": "3.0.1",
+    "Microsoft.AspNet.Authorization": "1.0.0-rc1-final",
+    "Microsoft.AspNet.Identity": "3.0.0-rc1-final"
   },
 
 
