@@ -19,7 +19,10 @@ namespace MRB.Web.Controllers
 {
     [Route("api/[controller]")]
     public class AuthController : BaseController
-    {
+    {  
+        // the default token expiration 
+        private const int TWO_WEEKS = 1440 * 7;
+
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly TokenAuthOptions tokenOptions;
@@ -27,10 +30,7 @@ namespace MRB.Web.Controllers
         private readonly IConfiguration configuration;
         private readonly IADService adService;
         private readonly IHostingEnvironment environment;
-        private string baseUrl = string.Empty;
-
-        // the default token expiration 
-        private const int TWO_WEEKS = 1440 * 7;
+        private string baseUrl = string.Empty;      
 
         public AuthController(TokenAuthOptions tokenOptions, UserManager<ApplicationUser> userManager,
            SignInManager<ApplicationUser> signInManager, IEmailSender emailSender,

@@ -23,7 +23,7 @@ export class App {
 
     configureRouter(config, router) {
         config.title = 'Aurelia Master Template';
-        config.addPipelineStep('authorize', AuthorizeStep);
+        //config.addPipelineStep('authorize', AuthorizeStep);
         config.map([
           { route: ['','profile'], moduleId: 'profile/profile', nav: true, title: 'Profile', auth: true },
           { route: 'login', moduleId: './login', nav: false, title:'Login' },

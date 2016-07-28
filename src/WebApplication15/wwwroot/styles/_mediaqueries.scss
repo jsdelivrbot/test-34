@@ -1,0 +1,7 @@
+﻿//Media Query Mixin - Desktop-first
+@mixin forSmallScreens($media) {
+   @media (max-width: $media/16+em) { @content; }
+}
+@mixin forLargeScreens($media) {
+    @media (min-width: $media/16+em) { @content; }
+}
