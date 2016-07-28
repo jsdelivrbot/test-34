@@ -56,7 +56,7 @@ gulp.task('build-jspm', function () {
 gulp.task('build', function (callback) {
     return runSequence(
       'clean',
-      ['build-system', 'build-html', 'build-css', 'build-jspm'],
+      ['build-system', 'build-html', 'build-css'],
       callback
     );
 });

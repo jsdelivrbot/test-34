@@ -1,6 +1,8 @@
 ﻿@import 'variables';
 @import 'mediaqueries';
 
+@charset "UTF-8";
+
 // Message
 .message {
     font-weight:bold;    
@@ -10,312 +12,109 @@
 }
 
 
-//Header
-.masthead {
-   display: flex;
-   justify-content: space-between;
-   max-width: 980px;
-   margin: auto;
-   padding: 10px;
-   background: $b;   
-   @include forSmallScreens(700) {
-      display: block;
-      text-align: center;
-   }
+/*
+  Custom Fluid & Responsive Grid System
+  Structure: Mobile-first (min-width)
+  Syntax: SCSS
+  Grid: Float-based
+  Created by: Your Name
+  Date: MM/DD/YY 
+*/
+*, *:before, *:after {
+  box-sizing: border-box;
 }
 
-.logo {
-   padding: 10px 0 10px 10px;
-   color: white;
-   line-height: 1.5;
-   font-size: 1.3em;
-   @include forSmallScreens(700) {
-      padding: 10px 0;
-      font-size: 1.5em;
-   }
-   @include forSmallScreens(420) {
-      font-size: 1.1em;
-   }
-}
-
-//Search field
-.search {
-   @extend %highlight-section;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   text-align: center;   
-   color: white;
-   font-size: .9em;
-   @include forSmallScreens(700) {
-      padding: 10px;
-   }
-   .field {
-      width: 50%;
-      margin: 0 5px;
-      padding: 7px;
-      @include forSmallScreens(420) {
-         width: 70%;
-      }
-   }
-   button {  
-      @include forSmallScreens(420) {
-         width: 90%;
-         margin-top: 10px;         
-      }
-   }
-}
-
-//Nav
-.main-nav {
-   max-width: 980px;
-   margin: auto;
-   padding: 10px 5px;
-   border-bottom: rgba(black,.2) 1px solid;
-   background: lighten($y,20);
-   @include forSmallScreens(420) {
-      padding: 5px 0;
-   }
-}
-
-//All Navigations
-.nav-container {
-   display: flex;
-   justify-content: center;
-   list-style-type: none;
-   margin: 0;
-   padding: 0;
-   @include forSmallScreens(420) {
-      flex-wrap: wrap;
-   }
-   li {
-      display: flex;      
-      width: 100%;
-      margin: 0 5px;
-      text-align: center;
-      @include forSmallScreens(420) {
-         display: flex;
-         justify-content: center;
-         flex-basis: 45%;
-         margin: 5px;
-      }
-   }
-   a {
-      @extend %highlight-section;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      padding: 10px;
-      color: white;
-      text-decoration: none;
-      font-size: 1.3em;
-      box-shadow: inset 0 1px 2px rgba(black,.2);
-      border-bottom: rgba(white,.6) 1px solid;      
-   }
+//Moble-first Media Queries Mixin
+@mixin forLargeScreens($media) {
+	@media (min-width: $media/16+em) { @content }
 }
 
 //Main Container
-.main-container {
-   max-width: 980px;
-   margin: auto;
-   padding: 40px 40px 20px;
-   background: #2a2a2a;
-   color: rgba(white,.8);
-   border-bottom: $y 40px solid;
-   @include forSmallScreens(420) {
-      padding: 20px;
-      line-height: 1.5;
-   }
-   //Main Headings
-   &>h1 {
-      margin-top: 0;
-      padding-bottom: 10px;
-      border-bottom: $y 3px solid;
-      @include forSmallScreens(420) {
-         font-size: 1.6em;
-      }
-   }
+.container-12 {
+  width: 100%;
+  //Change this value to ANYTHING you want, no need to edit anything else. 
+  max-width: 1200px; 
+  padding: 0 1.67%;
+  margin: auto;
+}
+//Grid
+.grid {
+  //Global Properties - Mobile-first
+  &-1, &-2, &-3, &-4, &-5, &-6, &-7, &-8, &-9, &-10, &-11, &-12 {
+    width: 100%;
+  }
+  @include forLargeScreens(740) { //Totally arbitrary width, it's only a starting point.
+    //Global Properties - Large screens
+    &-1, &-2, &-3, &-4, &-5, &-6, &-7, &-8, &-9, &-10, &-11, &-12 {
+      float: left;      
+      margin: 0 .83%;  
+    }
+    //Grid 12 Columns    
+    &-1  { width:6.67%; }
+    &-2  { width:15%; }
+    &-3  { width:23.33%; }
+    &-4  { width:31.67%; }
+    &-5  { width:40%; }
+    &-6  { width:48.33%; }
+    &-7  { width:56.67%; }
+    &-8  { width:65%; }
+    &-9  { width:73.33%; }
+    &-10 { width:81.67%; }
+    &-11 { width:90%; }
+    &-12 { width:98.33%; }
+  }
 }
 
-//Article
-.article-container {
-   margin-bottom: 20px;
-   padding: 10px;
-   background: rgba(white,.05);  
-   border-radius: 2px;
-   border: rgba(black,.2) 10px solid;
-   box-shadow: 0 5px 15px rgba(black,.3);
+
+//Clear Floated Elements - http://davidwalsh.name/css-clear-fix
+.clear, .row {
+  &:before,
+  &:after { content: ''; display: table; }
+  &:after { clear: both; }
 }
 
-   //Main Content of the Page
-   .main-content {
-      width: 75%;
-      margin-right: 10px;
-      padding: 10px;      
-      @include forSmallScreens(600) {
-         width: 100%;
-      }
-      h1 {
-         margin: 0;
-         padding-bottom: 10px;
-         border-bottom: $g 3px solid;
-      }
-   }
-
-   //Side Content
-   .side-content {
-      width: 25%;
-      padding: 10px;
-      font-size: .8em;
-      border: $b 2px dotted;
-      border-left: none;
-      border-right: none;
-      @include forSmallScreens(600) {
-         width: 100%;
-         margin-top: 12px;
-      }
-      h2 {
-         margin: 0;
-      }
-      ol {
-         padding-left: 20px;
-      }
-      a {
-         color: #eee;
-      }
-      p {
-         @include forSmallScreens(420) {
-            font-size: 1.2em;
-         }
-      }
-   }
-
-//Contact Form
-.contact-form {
-   width: 540px;
-   margin: 40px auto;
-   padding: 20px;
-   border: rgba(black,.2) 10px solid;
-   box-shadow: 0 5px 15px rgba(black,.3);
-   @include forSmallScreens(600) {
-      width: 100%;
-   }
-   h2 {
-      margin-top:0;
-      padding-bottom: 10px;
-      border-bottom: $r 3px solid;
-   }
-   label, button {
-      display: block;      
-   }
-   input, textarea {
-      margin-top: 5px;
-   }
-   .comments {
-      height: 100px;
-   }
-   button {
-      font-size: 1.3em;
-      background: $b;
-      @include forSmallScreens(420) {
-         width: 100%;
-      }
-   }
-   .flex-container {
-      justify-content: space-between;
-      @include forSmallScreens(600) {
-         display: flex;
-      }
-      @include forSmallScreens(400) {
-         display: block;
-      }
-   }
-   .label-col {
-      width: 48%;
-      @include forSmallScreens(400) {
-         width: 100%;
-      }
-   }
+//Use rows to nest containers
+.row { width: 100%; margin-bottom: 10px;
+  &:last-of-type { margin-bottom: 0; }
 }
 
-//Forms
-.field,
-.comments {
-   width: 100%;
-   margin-bottom: 10px;
-   
-   @include forSmallScreens(420) {
-      width: 100%;
-   }
+//Legacy IE
+.clear { zoom: 1; }
+
+//==================
+
+
+//Basic styling not needed for demo
+.container-12 { background: #fff; font-size: 30px; text-shadow:0 1px 1px rgba(black,.5); position: relative; overflow: hidden;
+  //Add labels for 'Wide' and 'Small' for easier troubleshooting
+ /* &:before { display: block; padding: 3px 12px; content: 'Small'; background: #000; position: absolute; top: 2px; left: 2px; z-index: 1; font-size: 18px;
+    @include forLargeScreens(640) {
+      content: 'Wide';
+    }
+  }*/
+}
+header { background: #429032; }
+nav { background: #2963BD; }
+section { background: #c90; }
+footer { background: #c03; }
+article { background: rgba(black,.3); }
+.row > div { padding: 10px 0; background: #222; font-size: 20px; color:#fff; }
+
+//Give heights to elements for better perception of sections
+header, footer { min-height: 150px; }
+section { min-height: 440px;
+  p { margin-bottom: 0; padding-bottom: 20px; }
+}
+nav p { margin-bottom: 0; padding-bottom: 20px; }
+nav {
+  @include forLargeScreens(640) {
+    height: 440px;
+  }
+}
+header, footer { display: flex; justify-content: center; align-items: center;
+  @include forLargeScreens(640) {
+    display: block;
+  }
 }
 
-//Form Elements
-input, textarea {
-   padding: 10px;
-   border: none;
-   background: rgba(white,.8);
-   border-radius: 2px;
-   box-shadow: inset 0 1px 1px rgba(black,.5);
-}
-
-button {
-   border: none;
-   padding: 7px 10px;
-   background: #333;
-   border-radius: 3px;
-   color: white;
-   font-family:"Slabo 27px", Arial, "Helvetica Neue", Helvetica, sans-serif;
-   cursor: pointer;
-}
-
-//Footer
-.main-footer {
-   color: white;
-   padding: 10px;
-   border-top: $y 2px dotted;
-   font-size: .7em;
-   p {
-      margin-top: 0;
-      font-size: 1.2em;
-   }
-}
-
-//Placeholder
-%highlight-section {
-   /*border: white 1px solid;
-   border-radius: 3px;
-   background: rgba(white, .1);*/
-   background: rgba(black,.2);
-   border-radius: 3px;
-}
-
-//Helper Classes
-.flex-container {
-   display: flex;
-   @include forSmallScreens(600) {
-      display: block;
-   }
-}
-
-//Globals
-*,
-*:before,
-*:after {
-   box-sizing: border-box;
-}
-
-body {
-   font-family: "Slabo 27px", Arial, "Helvetica Neue", Helvetica, sans-serif;
-}
-
-h1, h2 {
-   color: white;
-}
-
-blockquote {
-   font-style: italic;
-   @include forSmallScreens(420) {
-      margin-left: 10px;
-   }
-}
+body { margin: 0; padding: 20px; }
