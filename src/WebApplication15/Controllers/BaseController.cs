@@ -4,6 +4,10 @@ using System.Net.Http;
 using System.Net;
 using log4net;
 using System.Reflection;
+using System.Collections;
+using Microsoft.AspNet.Mvc.ModelBinding;
+using System.Linq;
+using Microsoft.AspNet.Identity;
 
 namespace MRB.Web.Controllers
 {
@@ -15,6 +19,26 @@ namespace MRB.Web.Controllers
         public static readonly ILog Log = LogManager.GetLogger(
             MethodBase.GetCurrentMethod().DeclaringType);
 
+        protected void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+        protected Hashtable GetErrorsFromModelState(ModelStateDictionary modelState)
+        {
+            var errors = new Hashtable();
+            foreach (var pair in ModelState)
+            {
+                if (pair.Value.Errors.Count > 0)
+                {
+                    errors[pair.Key] = pair.Value.Errors.Select(error => error.ErrorMessage).ToList();
+                }
+            }
+
+            return errors;
+        }
 
         /// <summary>
         ///     Creates an <see cref="HttpResponseException" /> to be thrown by the api.

@@ -5,8 +5,6 @@ using Microsoft.AspNet.Mvc;
 using MRB.Web.Models;
 using Microsoft.AspNet.Identity;
 using System.Security.Claims;
-using Microsoft.AspNet.Mvc.ModelBinding;
-using System.Collections;
 using System.IdentityModel.Tokens.Jwt;
 using MRB.Web.Services.Auth;
 using MRB.Web.Services.Email;
@@ -30,6 +28,9 @@ namespace MRB.Web.Controllers
         private readonly IADService adService;
         private readonly IHostingEnvironment environment;
         private string baseUrl = string.Empty;
+
+        // the default token expiration 
+        private const int TWO_WEEKS = 1440 * 7;
 
         public AuthController(TokenAuthOptions tokenOptions, UserManager<ApplicationUser> userManager,
            SignInManager<ApplicationUser> signInManager, IEmailSender emailSender,
@@ -56,10 +57,9 @@ namespace MRB.Web.Controllers
         private async Task<ApplicationUser> GetUserByUserNameOrEmail(string login)
         {
             var appUser = await userManager.FindByNameAsync(login);
+
             if (appUser == null)
-            {
                 appUser = await userManager.FindByEmailAsync(login);
-            }
 
             return appUser;
         }
@@ -121,7 +121,7 @@ namespace MRB.Web.Controllers
 
                     await userManager.UpdateAsync(appUser);
 
-                    DateTime? expires = DateTime.UtcNow.AddMinutes(1440 * 7); // 2 weeks
+                    DateTime? expires = DateTime.UtcNow.AddMinutes(TWO_WEEKS); 
 
                     // add more claims now that they are logged in
                     var userClaims = await userManager.GetClaimsAsync(appUser);
@@ -129,7 +129,7 @@ namespace MRB.Web.Controllers
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(userClaims, "Bearer");
                     claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "user"));
                     claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, appUser.UserName));
-                    claimsIdentity.AddClaim(new Claim("displayName", appUser.UserName));
+                    claimsIdentity.AddClaim(new Claim("displayname", appUser.ToDisplayName()));
                     claimsIdentity.AddClaim(new Claim("username", appUser.UserName));
 
                     // if user is a member of prodtracker_admin, add admin claim to user.             
@@ -146,11 +146,12 @@ namespace MRB.Web.Controllers
 
                     TokenDto td = new TokenDto();
                     td.id_token = token;
-                    td.tokenExpires = expires;
-                    td.authenticated = true;
+                    td.tokenExpires = expires;                    
                     td.username = appUser.UserName;
+                    td.displayname = appUser.ToDisplayName();
                     td.roles = roles;
-
+                    td.authenticated = true;
+                   
                     return new ObjectResult(td);
                 }
                 else
@@ -166,6 +167,8 @@ namespace MRB.Web.Controllers
                 return new { authenticated = false };
             }
         }
+
+
 
         private static List<string> GetRoles(IList<Claim> userClaims)
         {
@@ -198,40 +201,12 @@ namespace MRB.Web.Controllers
                 );
 
             return handler.WriteToken(securityToken);
-        }
-
-
-        
-       
-
-      
-        #region Helpers
-        private Hashtable GetErrorsFromModelState(ModelStateDictionary modelState)
-        {
-            var errors = new Hashtable();
-            foreach (var pair in ModelState)
-            {
-                if (pair.Value.Errors.Count > 0)
-                {
-                    errors[pair.Key] = pair.Value.Errors.Select(error => error.ErrorMessage).ToList();
-                }
-            }
-
-            return errors;
-        }
+        }      
+     
         private async Task<ApplicationUser> GetCurrentUserAsync()
         {
             return await userManager.FindByIdAsync(HttpContext.User.GetUserId());
         }
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
-        #endregion
-
 
     }
 }
