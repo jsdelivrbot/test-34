@@ -1,33 +1,19 @@
 ﻿@import 'variables';
 @import 'mediaqueries';
+/*@import 'libs/flex';*/
 
 @charset "UTF-8";
 
 // Message
 .message {
-    font-weight:bold;    
+    font-weight:bold;  
+      
     & span{
         color: $schottOrange;
     }
 }
 
 
-/*
-  Custom Fluid & Responsive Grid System
-  Structure: Mobile-first (min-width)
-  Syntax: SCSS
-  Grid: Float-based
-  Created by: Your Name
-  Date: MM/DD/YY 
-*/
-*, *:before, *:after {
-  box-sizing: border-box;
-}
-
-//Moble-first Media Queries Mixin
-@mixin forLargeScreens($media) {
-	@media (min-width: $media/16+em) { @content }
-}
 
 //Main Container
 .container-12 {
@@ -117,4 +103,4 @@ header, footer { display: flex; justify-content: center; align-items: center;
   }
 }
 
-body { margin: 0; padding: 20px; }
+body { margin: 0; padding: 0; }

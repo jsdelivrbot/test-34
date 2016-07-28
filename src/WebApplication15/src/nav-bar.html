@@ -1,20 +1,17 @@
 ﻿<template bindable="router">
-   
     <main class="container-12" role="main">
         <header class="grid-12" role="banner">
             <p>Header (.grid-12)</p>
         </header>
         <nav class="grid-4" role="navigation">
-            <div class="row">
-                <div class="grid-6 black">.grid-6</div>
-                <div class="grid-6 black">.grid-6</div>
-            </div>
-            <div class="row">
-                <div class="grid-2 black">.grid-2</div>
-                <div class="grid-7 black">.grid-7</div>
-                <div class="grid-3 black">.grid-3</div>
-            </div>
-            <p>Nav (.grid-4)</p>
+
+            <ul class="nav-container">
+                <li repeat.for="row of router.navigation" class="${row.isActive ? 'active' : ''}">
+                    <a data-toggle="collapse" data-target="#skeleton-navigation-navbar-collapse.in" href.bind="row.href">${row.title}</a>
+                </li>
+
+            </ul>
+
         </nav>
         <section class="grid-8">
             <div class="row">
@@ -43,4 +40,47 @@
             <p>Footer (.grid-12)</p>
         </footer>
     </main>
+
+
+
+
+
+    <!--<main class="main-container" role="main">
+        <header role="banner">Header</header>
+
+        <div class="flex-container">
+            <nav role="navigation">
+                <ul class="nav-container">
+                    <li repeat.for="row of router.navigation" class="${row.isActive ? 'active' : ''}">
+                        <a data-toggle="collapse" data-target="#skeleton-navigation-navbar-collapse.in" href.bind="row.href">${row.title}</a>
+                    </li>
+
+                </ul>
+            </nav>
+            <section>
+                <div class="flex-container row-1">
+                    <div class="level-1">row-1 content</div>
+                    <div class="level-1">row-1 content</div>
+                </div>
+                <div class="flex-container row-1">
+                    <div class="level-1">row-2 content</div>
+                    <div class="level-1">row-2 content</div>
+                    <div class="level-1">row-2 content</div>
+                </div>
+                <div class="flex-container row-3">
+                    <div class="level-1">content</div>
+                    <div class="level-1">content</div>
+                    <div class="level-1">content</div>
+                    <div class="level-1">content</div>
+                </div>
+                <div class="flex-container row-4">
+                    <div class="level-1 content-a">content-a</div>
+                    <div class="level-1 content-b">content-b</div>
+                    <div class="level-1 content-c">content-c</div>
+                </div>
+                <p>Content</p>
+            </section>
+        </div>
+        <footer role="contentinfo">Footer</footer>
+    </main>-->
 </template>
