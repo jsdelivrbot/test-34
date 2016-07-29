@@ -17,5 +17,6 @@
 
         body {
 		background: map-get($palette, bg);
-        
+        font-family: 'Open Sans', Helvetica, sans-serif;
+        font-weight:300;
       }

@@ -1,28 +1,33 @@
 <template>
     <require from="nav-bar.html"></require>
 
-
-    <div class="HolyGrail">
+    <div class="flex-container">
 
         <header role="banner">
-
-            <div class="logo">SCHOTT | Material Review Board</div>
-            <div class="search" role="search">
-                <form>
-                    <label>
-                        Search:
-                        <input type="text" class="field">
-                        <button>Search Now!</button>
-                    </label>
-                </form>
-
-            </div>
-        </header>
+            
+                <img  height="100" src="images/schottlogo2.png" />
+             
+                <div class="logo">
 
 
+                    Material Review Board
+                </div>
+                <div class="search" role="search">
+                    <form>
+                        <label>
+                            Search:
+                            <input type="text" class="field">
+                            <button>Search Now!</button>
+                        </label>
+                    </form>
 
-        <main class="HolyGrail-body">
-            <div class="HolyGrail-nav">
+                </div>
+</header>
+
+
+
+        <main class="flex-container-body">
+            <div class="flex-container-nav">
                 <nav-bar router.bind="router"></nav-bar>
 
             </div>
