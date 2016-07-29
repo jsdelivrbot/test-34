@@ -1,0 +1,17 @@
+﻿@import "../libs/variables";
+
+// Message
+.message {
+   
+    font-weight:bold;  
+      
+    & span{
+        color: $schottOrange;
+        font-size:2em;
+    }
+}
+.splash{
+    padding:50px;
+    display:flex;
+    justify-content:center;
+}

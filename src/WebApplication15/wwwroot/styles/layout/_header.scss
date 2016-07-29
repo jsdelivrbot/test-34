@@ -1,0 +1,43 @@
+﻿@import "../libs/variables";
+@import "../libs/functions";
+
+header {
+    display: flex;
+    background: map-get($palette, header);
+    padding: 2em;
+    justify-content: space-between;
+    border-radius: 3px 3px 0 0;
+    flex-direction: column;
+
+    @media (min-width:768px) {
+        flex-direction: row;
+    }
+}
+
+.logo {
+    border: white 1px solid;
+    border-radius: 3px;
+    background: rgba(white, .1);
+    padding: 0 10px;
+    color: white;
+    line-height: 2.5;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 10%;
+    font-size: 2rem;
+    flex-direction: column;
+    order:1;
+    @media (min-width:768px) {
+        flex-direction: row;
+    }
+}
+
+.search {
+
+    border: white 1px solid;
+    border-radius: 3px;
+    background: rgba(white, .1);
+    flex-grow: 1;
+    flex-shrink: 1;
+    order:2;
+}

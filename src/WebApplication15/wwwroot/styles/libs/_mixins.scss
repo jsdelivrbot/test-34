@@ -1,0 +1,27 @@
+﻿
+
+@mixin animation-vendor($animation, $dur){
+    -webkit-animation: $animation $dur; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: $animation $dur; /* Firefox < 16 */
+        -ms-animation: $animation $dur; /* Internet Explorer */
+         -o-animation: $animation $dur; /* Opera < 12.1 */
+            animation: $animation $dur;
+}
+
+@mixin keyframes ($animation-name) {
+    @-webkit-keyframes $animation-name{
+        @content;
+    }
+    @-moz-keyframes $animation-name{
+        @content;
+    }
+    @-ms-keyframes $animation-name{
+        @content;
+    }
+    @-o-keyframes $animation-name{
+        @content;
+    }
+    @keyframes $animation-name{
+        @content;
+    }
+}

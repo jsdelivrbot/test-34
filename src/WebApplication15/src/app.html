@@ -1,9 +1,39 @@
 <template>
     <require from="nav-bar.html"></require>
-    
-    <nav-bar router.bind="router"></nav-bar>
 
-    <div class="page-host">
-        <router-view></router-view>
+
+    <div class="HolyGrail">
+
+        <header role="banner">
+
+            <div class="logo">SCHOTT | Material Review Board</div>
+            <div class="search" role="search">
+                <form>
+                    <label>
+                        Search:
+                        <input type="text" class="field">
+                        <button>Search Now!</button>
+                    </label>
+                </form>
+
+            </div>
+        </header>
+
+
+
+        <main class="HolyGrail-body">
+            <div class="HolyGrail-nav">
+                <nav-bar router.bind="router"></nav-bar>
+
+            </div>
+
+            <router-view></router-view>
+
+        </main>
+
+
+        <footer role="contentinfo">Footer</footer>
+
+
     </div>
 </template>

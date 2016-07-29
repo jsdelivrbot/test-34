@@ -1,0 +1,8 @@
+﻿@import "../mediaqueries";
+@import "../libs/variables";
+
+nav {
+   
+    background: map-get($palette, footer);
+    
+}

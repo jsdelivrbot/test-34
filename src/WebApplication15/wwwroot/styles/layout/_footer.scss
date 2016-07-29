@@ -1,0 +1,7 @@
+﻿@import "../libs/variables";
+@import "../libs/functions";
+
+footer {
+    background: map-get($palette, fg);
+    padding: 2em;
+}

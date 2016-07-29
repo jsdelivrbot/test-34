@@ -9,7 +9,7 @@ module.exports = {
     root: appRoot,
     source: appRoot + '**/**/**/*.js',
     html: appRoot + '**/**/**/*.html',
-    scss: ['wwwroot/styles/*.scss'],    
+    scss: ['wwwroot/styles/*.scss','wwwroot/styles/**/_*.scss'],  
     css: outputRoot + 'styles/',
     output: outputRoot,
     exportSourceRoot: exportSourceRoot,
