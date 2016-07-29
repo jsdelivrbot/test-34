@@ -8,11 +8,18 @@
             animation: $animation $dur;
 }
 @mixin transition-vendor($transition){
-    -webkit-animation: $transition; /* Safari, Chrome and Opera > 12.1 */
-       -moz-animation: $transition; /* Firefox < 16 */
-        -ms-animation: $transition; /* Internet Explorer */
-         -o-animation: $transition; /* Opera < 12.1 */
-            animation: $transition;
+    -webkit-transition: $transition; /* Safari, Chrome and Opera > 12.1 */
+       -moz-transition: $transition; /* Firefox < 16 */
+        -ms-transition: $transition; /* Internet Explorer */
+         -o-transition: $transition; /* Opera < 12.1 */
+            transition: $transition;
+}
+@mixin transform-vendor($transform){
+    -webkit-transform: $transform; /* Safari, Chrome and Opera > 12.1 */
+       -moz-transform: $transform; /* Firefox < 16 */
+        -ms-transform: $transform; /* Internet Explorer */
+         -o-transform: $transform; /* Opera < 12.1 */
+            transform: $transform;
 }
 @mixin keyframes ($animation-name) {
     @-webkit-keyframes $animation-name{

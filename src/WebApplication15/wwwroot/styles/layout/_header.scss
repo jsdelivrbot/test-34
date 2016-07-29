@@ -15,6 +15,7 @@ header {
         flex-direction: row;
     }
 }
+
 .schott-logo {
     float: left;
     margin-top: -20px;
@@ -22,6 +23,7 @@ header {
     @include transition-vendor(border .10s ease-in-out);
     transition: border .10s ease-in-out;
 }
+
 .logo {
     border: white 1px solid;
     border-radius: 3px;
@@ -33,15 +35,14 @@ header {
     flex-shrink: 1;
     font-size: 2em;
     flex-direction: column;
-    order:1;
-    }
+    order: 1;
+}
 
 .search {
-
     border: white 1px solid;
     border-radius: 3px;
     background: rgba(white, .1);
     flex-grow: 1;
     flex-shrink: 1;
-    order:2;
+    order: 2;
 }

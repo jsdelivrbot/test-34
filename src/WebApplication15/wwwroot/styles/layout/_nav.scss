@@ -8,15 +8,14 @@ nav {
     height: 100%;
 
     ul {
-
-        margin:0;
-        padding:0;
+        margin: 0;
+        padding: 0;
 
         li {
             list-style: none;
             padding: 12px 20px;
 
-            a { 
+            a {
                 padding: 12px 20px;
                 color: #fff;
             }
@@ -24,21 +23,15 @@ nav {
     }
 }
 
-li.active {
-    border-left: 2px solid #2baab1;
+.nlightblue.active {
+    border-left: 2px solid #6b59ef;
 }
 
 .nlightblue a:hover {
-    background: #2baab1; padding: 12px 20px;
-}
+    background: #6b59ef;
+    padding: 12px 20px;
 
-.nlightblue a:hover {
-    @include transition-vendor(.5s ease-in-out);
-    transition: .5s ease-in-out;
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
+    @include transition-vendor(background .25s ease-in-out);
 }
 
 .nlightblue a {
