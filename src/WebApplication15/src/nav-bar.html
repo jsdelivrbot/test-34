@@ -2,7 +2,7 @@
     
         <nav role="navigation" class="flex-container-nav">
             <ul>
-                <li repeat.for="row of router.navigation" class="${row.isActive ? 'active' : ''}">
+                <li repeat.for="row of router.navigation" class="nlightblue ${row.isActive ? 'active' : ''}">
                     <a href.bind="row.href">${row.title}</a>
                 </li>
             </ul>
