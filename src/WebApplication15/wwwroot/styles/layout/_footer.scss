@@ -4,4 +4,6 @@
 footer {
     background: map-get($palette, fg);
     padding: 2em;
+    flex: none; /* 2 */
+    padding:3em;
 }

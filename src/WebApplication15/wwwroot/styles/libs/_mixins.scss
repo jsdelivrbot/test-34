@@ -7,7 +7,13 @@
          -o-animation: $animation $dur; /* Opera < 12.1 */
             animation: $animation $dur;
 }
-
+@mixin transition-vendor($transition){
+    -webkit-animation: $transition; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: $transition; /* Firefox < 16 */
+        -ms-animation: $transition; /* Internet Explorer */
+         -o-animation: $transition; /* Opera < 12.1 */
+            animation: $transition;
+}
 @mixin keyframes ($animation-name) {
     @-webkit-keyframes $animation-name{
         @content;

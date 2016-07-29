@@ -26,6 +26,7 @@ export class App {
         //config.addPipelineStep('authorize', AuthorizeStep);
         config.map([
           { route: ['','profile'], moduleId: 'profile/profile', nav: true, title: 'Profile', auth: true },
+          { route: ['settings'], moduleId: 'settings/settings', nav: true, title: 'Settings', auth: true },
           { route: 'login', moduleId: './login', nav: false, title:'Login' },
           { route: 'logout', moduleId: './logout', nav: false, title:'Logout'},
         ]); 

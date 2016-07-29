@@ -1,12 +1,13 @@
 ﻿@import "../libs/variables";
 @import "../libs/functions";
+@import "../libs/mixins";
 
 header {
     display: flex;
     background: map-get($palette, bg-alt);
     color: map-get($palette, fg-bold);
     padding: 2em;
-    justify-content: space-between;
+    justify-content: space-around;
     border-radius: 3px 3px 0 0;
     flex-direction: column;
 
@@ -14,7 +15,13 @@ header {
         flex-direction: row;
     }
 }
-
+.schott-logo {
+    float: left;
+    margin-top: -20px;
+    color: #000;
+    @include transition-vendor(border .10s ease-in-out);
+    transition: border .10s ease-in-out;
+}
 .logo {
     border: white 1px solid;
     border-radius: 3px;
