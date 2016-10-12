@@ -1,8 +1,0 @@
-{    
-  "parser": "babel-eslint",
-  "rules": {
-    "no-alert": 0,
-    "semi": 2
-  }
-}
-
