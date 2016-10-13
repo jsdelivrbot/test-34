@@ -9,62 +9,50 @@ using System.IO;
 using log4net.Config;
 using Microsoft.Extensions.PlatformAbstractions;
 using System.Security.Claims;
-using MRB.Web.Services.Auth;
+using GolfConnector.Web.Services.Auth;
 using System.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using System.Diagnostics;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Authentication.JwtBearer;
-using MRB.Web.Services;
-using MRB.Web.Services.Email;
+using GolfConnector.Web.Services;
+using GolfConnector.Web.Services.Email;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
 using Newtonsoft.Json;
 using Microsoft.AspNet.Diagnostics;
 using Microsoft.AspNet.Identity;
-using MRB.Web.Models;
+using GolfConnector.Web.Models;
 using Microsoft.Data.Entity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 [assembly: XmlConfigurator(Watch = false)]
-namespace MRB.Web
+namespace GolfConnector.Web
 {
+    public interface IEmailSender
+    {
+        Task SendEmailAsync(string email, string subject, string message);
+    }
     public class AuthMessageSender : IEmailSender
     {
-        private readonly IConfiguration configuration;
-
-        public AuthMessageSender(IConfiguration configuration)
-        {
-            this.configuration = configuration;
-        }
-
-        string IEmailSender.adminEmail
-        {
-            get
-            {
-                return configuration.Get<string>("AdminEmail");
-            }
-        }
-
         public Task SendEmailAsync(string email, string subject, string message)
         {
             // Credentials:          
-            var sentFrom = "no-reply@guest.us.schott.com";
+            var sentFrom = "no-reply";
 
             // Configure the client:
             System.Net.Mail.SmtpClient client =
-                new System.Net.Mail.SmtpClient("10.28.68.134");
+                new System.Net.Mail.SmtpClient("smtp.google.com");
 
-            client.Port = 25;
+            client.Port = 465;
             client.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
             client.UseDefaultCredentials = false;
 
             // Create the credentials:
-            // TODO: user secret pw
             System.Net.NetworkCredential credentials =
-                new System.Net.NetworkCredential("SCHOTT\\adminprogram", "");
+                new System.Net.NetworkCredential("golfconnector@gmail.com", "GCpro777");
 
-            client.EnableSsl = false;
+            client.EnableSsl = true;
             client.Credentials = credentials;
 
             // Create the message:
@@ -95,11 +83,12 @@ namespace MRB.Web
         private TokenAuthOptions tokenOptions;
         public static ClaimsPrincipal sessionUser = null;
 
-        public static IConfiguration Configuration { get; set; }
+        public IConfiguration Configuration { get; set; }
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
             var builder = new ConfigurationBuilder()
-                  .AddJsonFile("appsettings.json");
+                  .AddJsonFile("appsettings.json")
+                  .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
             if (env.IsDevelopment())
             {
@@ -116,100 +105,88 @@ namespace MRB.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            try
+            services.AddAuthentication();
+            //services.AddCaching(); // todo: do we need this?
+
+            // generate new key and save in XML file (test only)
+            //var file = RSAKeyUtils.GenerateRsaKeys();
+            //File.WriteAllText(@"C:\temp\keys.xml", file);
+            services.AddInstance<IConfiguration>(Configuration);
+
+            //RSAParameters keyParams = RSAKeyUtils.GetRandomKey();           
+            //key = new RsaSecurityKey(keyParams);
+            var stream = new FileStream(@"C:\temp\keys.xml", FileMode.Open);
+            using (var textReader = new StreamReader(stream))
             {
-                services.AddAuthentication();
-                services.AddSingleton(provider => Configuration);
-               
+                RSACryptoServiceProvider publicAndPrivate = new RSACryptoServiceProvider();
+                publicAndPrivate.FromXmlString(textReader.ReadToEnd());
 
-                // generate new key and save in XML file (test only)
-                //var file = RSAKeyUtils.GenerateRsaKeys();
-                //File.WriteAllText(@"C:\keys\keys.xml", file);
+                key = new RsaSecurityKey(publicAndPrivate.ExportParameters(true));
 
-                //RSAParameters keyParams = RSAKeyUtils.GetRandomKey();           
-                //key = new RsaSecurityKey(keyParams);
-                var stream = new FileStream(@"C:\keys\keys.xml", FileMode.Open);
-
-                using (var textReader = new StreamReader(stream))
-                {
-                    RSACryptoServiceProvider publicAndPrivate = new RSACryptoServiceProvider();
-                    publicAndPrivate.FromXmlString(textReader.ReadToEnd());
-
-                    key = new RsaSecurityKey(publicAndPrivate.ExportParameters(true));
-
-                    Debug.Write(key);
-                }
-                
-                tokenOptions = new TokenAuthOptions()
-                {
-                    Audience = Configuration["Server:BaseUrl"],
-                    Issuer = TokenIssuer,
-                    SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.RsaSha256Signature)
-                };
-
-                services.AddInstance(tokenOptions);
-
-                services.AddAuthorization(auth =>
-                {
-                    auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-                        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
-                        .RequireAuthenticatedUser().Build());
-
-                    auth.AddPolicy("MustHaveRole", policy => policy.RequireClaim(ClaimTypes.Role).Build());
-                    auth.AddPolicy("MustBeAdmin", policy => policy.RequireClaim(ClaimTypes.Role, "admin").Build());
-                });
-
-
-
-
-                // TODO: uncomment when ApplicationDbContext is created
-                // Add framework services.
-                services.AddEntityFramework()
-                    .AddSqlServer()
-                    .AddDbContext<ApplicationDbContext>(options =>
-                        options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
-
-                services.AddIdentity<ApplicationUser, IdentityRole>(options => options.Password = new PasswordOptions
-                {
-                    RequireDigit = false,
-                    RequireLowercase = false,
-                    RequireUppercase = false,
-                    RequireNonLetterOrDigit = false
-                })
-                    .AddEntityFrameworkStores<ApplicationDbContext>()
-                    .AddDefaultTokenProviders();
-
-                // Add framework services.
-                services.AddMvc();
-
-                // Add application services.           
-                services.AddSingleton<IADService, ADService>();
-                services.AddTransient<IEmailSender, AuthMessageSender>();
+                Debug.Write(key);
             }
-            catch (Exception ex)
+            tokenOptions = new TokenAuthOptions()
             {
+                Audience = Configuration["Server:BaseUrl"],
+                Issuer = TokenIssuer,
+                SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.RsaSha256Signature)
+            };
+            // Save the token options into an instance so they're accessible to the 
+            // controller.
+            services.AddInstance<TokenAuthOptions>(tokenOptions);
 
-            }
+            services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
+                    .RequireAuthenticatedUser().Build());
+
+                auth.AddPolicy("MustBeJewish", policy => policy.RequireClaim("Religion", "Jewish").Build());
+                auth.AddPolicy("MustHaveRole", policy => policy.RequireClaim(ClaimTypes.Role).Build());
+                auth.AddPolicy("MustBeAdmin", policy => policy.RequireClaim(ClaimTypes.Role, "administrator").Build());
+
+            });
+
+            // Add framework services.
+            services.AddEntityFramework()
+                .AddSqlServer()
+                .AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(options => options.Password = new PasswordOptions
+            {
+                RequireDigit = false,
+                RequireLowercase = false,
+                RequireUppercase = false,
+                RequireNonLetterOrDigit = false
+            })
+               .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddScoped<IGolfConnectorDbContext, ApplicationDbContext>();
+
+            // Add framework services.
+            services.AddMvc();
+
+            // Add application services.
+            services.AddTransient<IEmailSender, AuthMessageSender>();            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
             ILoggerFactory loggerFactory, UserManager<ApplicationUser> userManager)
         {
-            // seed the database here
-            //sampleData.InitializeDataAsync();           
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
             }
             else
             {
-                // TODO: uncomment when ApplicationDbContext is created
                 // For more details on creating database during deployment see http://go.microsoft.com/fwlink/?LinkID=615859
                 try
                 {
@@ -223,18 +200,12 @@ namespace MRB.Web
                 catch { }
             }
 
-
-            app.UseRuntimeInfoPage("/info");
-            
-
-            // looks at every request to see if there's any windows identity information
             app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());
 
             app.Use(async (context, next) =>
             {
                 try
                 {
-                   
                     await next.Invoke();
                 }
                 catch (SecurityTokenInvalidLifetimeException ex)
@@ -247,18 +218,8 @@ namespace MRB.Web
                     }
                     context.Response.StatusCode = 401;
                 }
-                catch (Exception ex)
-                {
-                    // If the headers have already been sent, you can't replace the status code.
-                    // In this case, throw an exception to close the connection.       
-                    if (context.Response.HasStarted)
-                    {
-                        throw;
-                    }
-                    context.Response.StatusCode = 401;
-                }
-
             });
+
             // Register simple error handler to catch token expiries and change them to a 202* 
             // *(should be 401 but front end can't catch those).
             app.UseExceptionHandler(appBuilder =>
@@ -313,8 +274,8 @@ namespace MRB.Web
                         //        (new { success = false, error = error.Error.Message }));
                         //}
 
-                    }
 
+                    }
                     // We're not trying to handle anything else so just let the default 
                     // handler handle.
                     else await next();
@@ -334,7 +295,9 @@ namespace MRB.Web
                     {
                         if (expires.Value <= DateTime.UtcNow.AddMinutes(-1))
                         {
+                            // todo: reissue a refresh token? 
                             throw new SecurityTokenExpiredException();
+                            //return false;
                         }
                         return true;
                     },
@@ -349,62 +312,19 @@ namespace MRB.Web
 
             app.UseIdentity();
 
+            app.UseStaticFiles();
+
             app.UseMvc();
 
             app.UseFileServer(new FileServerOptions
             {
                 EnableDefaultFiles = true
             });
-            
+
         }
 
 
-        #region create sample data (sample)
-        //private static async Task CreateSampleData(IServiceProvider applicationServices)
-        //{
-        //    using (var dbContext = applicationServices.GetService<IProdTrackerDbContext>())
-        //    {
-        //        var sqlServerDatabase = dbContext.Database as SqlServerDatabase;
-        //        if (sqlServerDatabase != null)
-        //        {
-        //            // Create database in user root (c:\users\your name)
-        //            if (await sqlServerDatabase.EnsureCreatedAsync())
-        //            {
-        //                // add some movies
-        //                var movies = new List<Movie>
-        //        {
-        //            new Movie {Title="Star Wars", Director="Lucas"},
-        //            new Movie {Title="King Kong", Director="Jackson"},
-        //            new Movie {Title="Memento", Director="Nolan"}
-        //        };
-        //                movies.ForEach(m => dbContext.Movies.AddAsync(m));
 
-        //                // add some users
-        //                var userManager = applicationServices.GetService<UserManager<ApplicationUser>>();
-
-        //                // add editor user
-        //                var stephen = new ApplicationUser
-        //                {
-        //                    UserName = "Stephen"
-        //                };
-        //                var result = await userManager.CreateAsync(stephen, "P@ssw0rd");
-        //                await userManager.AddClaimAsync(stephen, new Claim("CanEdit", "true"));
-
-        //                // add normal user
-        //                var bob = new ApplicationUser
-        //                {
-        //                    UserName = "Bob"
-        //                };
-        //                await userManager.CreateAsync(bob, "P@ssw0rd");
-        //            }
-
-        //        }
-        //    }
-        //}
-        #endregion
-
-
-        // Entry point for the application.
         public static void Main(string[] args) => WebApplication.Run<Startup>(args);
     }
 }

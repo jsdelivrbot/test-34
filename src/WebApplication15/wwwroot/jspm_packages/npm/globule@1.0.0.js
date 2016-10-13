@@ -1,0 +1,1 @@
+module.exports = require("npm:globule@1.0.0/lib/globule");

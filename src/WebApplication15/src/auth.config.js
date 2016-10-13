@@ -9,7 +9,7 @@
     // The the property from which to get the access token after a successful login or signup
     accessTokenProp: 'id_token',
     //This is the property from which to get the token
-    accessTokenName: 'name-of-project',
+    accessTokenName: 'golf_connector',
     profileUrl: 'api/oauth/token', 
     signupRedirect: '/#/confirmationSent',
     httpInterceptor: true,
@@ -28,7 +28,7 @@ var configForProduction = {
     // The the property from which to get the access token after a successful login or signup
     accessTokenProp: 'id_token',
     //This is the property from which to get the token
-    accessTokenName: 'name-of-project',
+    accessTokenName: 'golf_connector',
     profileUrl: 'api/oauth/token', 
     signupRedirect: '/#/confirmationSent',
     httpInterceptor: true,

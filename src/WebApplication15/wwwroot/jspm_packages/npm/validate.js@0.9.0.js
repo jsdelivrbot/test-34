@@ -1,0 +1,1 @@
+module.exports = require("npm:validate.js@0.9.0/validate");

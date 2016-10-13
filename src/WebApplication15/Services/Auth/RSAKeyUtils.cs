@@ -2,7 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace MRB.Web.Services.Auth
+namespace GolfConnector.Web.Services.Auth
 {
     public class RSAKeyUtils
     {

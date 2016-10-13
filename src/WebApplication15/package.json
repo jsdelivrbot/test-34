@@ -1,7 +1,7 @@
 {
-  "name": "MRB",
-  "description": "MRB",
-  "author": "Dan Bergman <dan.bergman@guest.us.schott.com>",
+  "name": "GolfConnector",
+  "description": "Golf Connector Pro, Golf on your schedule",
+  "author": "Dan Bergman <danrbergman@gmail.com>",
   "main": "dist/main.js",
   "repository": {
     "type": "git",

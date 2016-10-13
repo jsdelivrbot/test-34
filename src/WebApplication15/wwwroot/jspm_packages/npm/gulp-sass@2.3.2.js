@@ -1,0 +1,1 @@
+module.exports = require("npm:gulp-sass@2.3.2/index");

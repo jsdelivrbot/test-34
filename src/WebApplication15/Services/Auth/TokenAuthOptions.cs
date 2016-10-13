@@ -1,6 +1,6 @@
 ﻿using System.IdentityModel.Tokens;
 
-namespace MRB.Web.Services.Auth
+namespace GolfConnector.Web.Services.Auth
 {
     public class TokenAuthOptions
     {

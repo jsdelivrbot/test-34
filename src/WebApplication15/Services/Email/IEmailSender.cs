@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MRB.Web.Services.Email
+namespace GolfConnector.Web.Services.Email
 {
     public interface IEmailSender
     {

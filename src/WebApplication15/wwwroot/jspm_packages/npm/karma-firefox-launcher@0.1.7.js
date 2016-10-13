@@ -1,0 +1,1 @@
+module.exports = require("npm:karma-firefox-launcher@0.1.7/index");

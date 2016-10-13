@@ -9,12 +9,12 @@ using Microsoft.AspNet.Mvc.ModelBinding;
 using System.Linq;
 using Microsoft.AspNet.Identity;
 
-namespace MRB.Web.Controllers
+namespace GolfConnector.Web.Controllers
 {
     [Route("api/[controller]")]
     public class BaseController : Controller
     {        
-        public static readonly string LogPath = @"C:\inetpub\wwwroot\MRB_Logs\";
+        public static readonly string LogPath = @"C:\inetpub\wwwroot\GolfConnector_Logs\";
 
         public static readonly ILog Log = LogManager.GetLogger(
             MethodBase.GetCurrentMethod().DeclaringType);

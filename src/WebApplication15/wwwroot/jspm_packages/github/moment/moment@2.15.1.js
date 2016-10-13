@@ -1,0 +1,1 @@
+module.exports = require("github:moment/moment@2.15.1/moment");

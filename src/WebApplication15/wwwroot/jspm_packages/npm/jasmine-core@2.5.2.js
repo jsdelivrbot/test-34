@@ -1,0 +1,1 @@
+module.exports = require("npm:jasmine-core@2.5.2/lib/jasmine-core");

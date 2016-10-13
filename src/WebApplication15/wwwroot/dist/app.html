@@ -1,0 +1,46 @@
+<template>
+    <require from="nav-bar.html"></require>
+
+    <div class="flex-container">
+
+        <header role="banner">
+
+
+            <!--<img height="55" width="156" style="margin-top: -22px;float: left;padding-right:10px;" src="images/schottlogo2.png" title="Developed for SCHOTT by Lamparth Consulting, LLC" />-->
+
+
+            <div class="logo">
+
+
+                Material Review Board
+            </div>
+            <div class="search" role="search">
+                <form>
+                    <label>
+                        Search:
+                        <input type="text" class="field">
+                        <button>Search Now!</button>
+                    </label>
+                </form>
+
+            </div>
+        </header>
+
+
+
+        <main class="flex-container-body">
+
+            <nav-bar router.bind="router"></nav-bar>
+
+
+
+            <router-view></router-view>
+
+        </main>
+
+
+        <footer role="contentinfo">Footer</footer>
+
+
+    </div>
+</template>

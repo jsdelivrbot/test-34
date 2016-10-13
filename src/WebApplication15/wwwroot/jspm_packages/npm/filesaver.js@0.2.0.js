@@ -1,0 +1,1 @@
+module.exports = require("npm:filesaver.js@0.2.0/FileSaver");

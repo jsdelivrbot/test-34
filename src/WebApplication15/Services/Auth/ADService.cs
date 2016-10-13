@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 
-namespace MRB.Web.Services
+namespace GolfConnector.Web.Services
 {
     public interface IADService
     {
