@@ -35,7 +35,7 @@ namespace GolfConnector.Web.Models.Domain
         public int GolfMatchId { get; set; }
 
         // created by
-        [ForeignKey("CreatedByUserId")]
+        [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
 
         // default 4
@@ -44,7 +44,7 @@ namespace GolfConnector.Web.Models.Domain
         // default 18
         public int NumberOfHoles { get; set; }
 
-        public string ScheduleDateIso { get; set; }
+        public string GolfMatchDateIso { get; set; }
         public string Comments { get; set; }
 
         [Required]

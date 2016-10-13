@@ -9,7 +9,7 @@ namespace GolfConnector.Web.Models
     {
         public ApplicationDbContext()
         {
-            // Database.EnsureCreated();
+             Database.EnsureCreated();
         }
 
         public DbSet<GolfMatchPlayer> GolfMatchPlayers { get; set; }
@@ -19,7 +19,7 @@ namespace GolfConnector.Web.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseSqlServer(@"Server=(localdb)\\mssqllocaldb; Database=GolfConnectorPro; Trusted_Connection=True; MultipleActiveResultSets=true");
+            options.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=GolfConnectorPro; Trusted_Connection=True; MultipleActiveResultSets=true");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
