@@ -109,7 +109,7 @@ namespace WebApplication15.Migrations
 
                     b.Property<bool>("IsActiveMember");
 
-                    b.Property<bool>("IsAdmin");
+                    b.Property<bool>("IsClubAdmin");
 
                     b.HasKey("ClubMemberEmailId");
                 });
@@ -134,8 +134,6 @@ namespace WebApplication15.Migrations
 
                     b.Property<string>("Time");
 
-                    b.Property<string>("UserId");
-
                     b.HasKey("GolfMatchId");
                 });
 
@@ -148,13 +146,37 @@ namespace WebApplication15.Migrations
 
                     b.Property<DateTime?>("InviteDate");
 
-                    b.Property<bool>("IsConfirmed");
+                    b.Property<int>("InviteStatusId");
 
-                    b.Property<DateTime?>("JoinDate");
+                    b.Property<bool>("IsMatchCreator");
 
                     b.Property<string>("UserId");
 
                     b.HasKey("GolfMatchPlayerId");
+                });
+
+            modelBuilder.Entity("GolfConnector.Web.Models.Domain.InviteStatus", b =>
+                {
+                    b.Property<int>("InviteStatusId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("InviteStatusId");
+                });
+
+            modelBuilder.Entity("GolfConnector.Web.Models.Domain.PlayerQueue", b =>
+                {
+                    b.Property<int>("PlayerQueueId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("GolfMatchId");
+
+                    b.Property<short>("QueueNumber");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("PlayerQueueId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityRole", b =>
@@ -251,13 +273,24 @@ namespace WebApplication15.Migrations
                     b.HasOne("GolfConnector.Web.Models.Domain.Club")
                         .WithMany()
                         .HasForeignKey("ClubId");
+                });
+
+            modelBuilder.Entity("GolfConnector.Web.Models.Domain.GolfMatchPlayer", b =>
+                {
+                    b.HasOne("GolfConnector.Web.Models.Domain.GolfMatch")
+                        .WithMany()
+                        .HasForeignKey("GolfMatchId");
+
+                    b.HasOne("GolfConnector.Web.Models.Domain.InviteStatus")
+                        .WithMany()
+                        .HasForeignKey("InviteStatusId");
 
                     b.HasOne("GolfConnector.Web.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("GolfConnector.Web.Models.Domain.GolfMatchPlayer", b =>
+            modelBuilder.Entity("GolfConnector.Web.Models.Domain.PlayerQueue", b =>
                 {
                     b.HasOne("GolfConnector.Web.Models.Domain.GolfMatch")
                         .WithMany()

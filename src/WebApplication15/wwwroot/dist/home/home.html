@@ -1,0 +1,140 @@
+<template>
+    <require from='nav-bar'></require>
+        <!-- Header -->
+    
+        <nav-bar router.bind="router"></nav-bar>
+      
+
+        <!-- Banner -->
+        <section id="banner">
+            <div class="content">
+                <div class="inner">
+                    <header>
+                        <h2>Golf on your schedule.</h2>
+                        <p>With Golf Connector Pro it's always time to golf.</p>
+                    </header>
+                    <!--<ul if.bind="!isAuthenticated" class="actions" style="display: -webkit-flex">
+                        <li>
+                            <a href="/#/login" class="button huge" style="cursor: pointer;">Log In</a>
+
+                        </li>
+                        <li><a href="/#/signup" class="button huge">Sign up</a></li>
+                    </ul>-->
+                    <ul  class="actions" style="display: -webkit-flex">
+                        <li if.bind="isAuthenticated">
+                            <a href="/#/schedule" class="button huge" style="cursor: pointer;">Schedule</a>
+
+                        </li>
+                        <li></li>
+                        <li if.bind="!isAuthenticated">
+    <a href="#" class="button huge">Learn More</a>
+</li>
+</ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- One -->
+        <section id="one" class="wrapper">
+            <div class="inner">
+
+
+
+                <ul class="features">
+                    <li>
+                        <h3 class="icon style1 fa-area-chart">Integer vitae consequat sed magna feugiat</h3>
+                        <p>Lorem ipsum dolor sit amet interdum mollis sapien. Sed ac risus. Phasellus lacinia, ullamcorper laoreet, lectus arcu pulvinar lorem ipsum interdum sed tempus sagittis lorem feugiat. In fringilla diet consectetur. Morbi libero orci, consectetur in odio maximus felis.</p>
+                    </li>
+                    <li>
+                        <h3 class="icon style2 fa-pie-chart">Phasellus libero eu sed augue gravida</h3>
+                        <p>Lorem ipsum dolor sit amet interdum mollis sapien. Sed ac risus. Phasellus lacinia, ullamcorper laoreet, lectus arcu pulvinar lorem ipsum interdum sed tempus sagittis lorem feugiat. In fringilla diet consectetur. Morbi libero orci, consectetur in odio maximus felis.</p>
+                    </li>
+                    <li>
+                        <h3 class="icon style3 fa-cube">Lacus ultricies sagittis mi dui dapibus</h3>
+                        <p>Lorem ipsum dolor sit amet interdum mollis sapien. Sed ac risus. Phasellus lacinia, ullamcorper laoreet, lectus arcu pulvinar lorem ipsum interdum sed tempus sagittis lorem feugiat. In fringilla diet consectetur. Morbi libero orci, consectetur in odio maximus felis.</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Two -->
+        <section if.bind="!isAuthenticated" id="two" class="wrapper cta">
+            <div class="inner">
+                <header>
+                    <h2>Ultrices ante sagittis nunc senectus libero netus</h2>
+                    <ul class="actions">
+                        <li><a href="#" class="button big">How it works</a></li>
+                    </ul>
+                </header>
+                <p>Lorem ipsum dolor sit amet interdum mollis sapien. Sed ac risus. Phasellus lacinia, ullamcorper laoreet, lectus arcu pulvinar lorem ipsum interdum sed tempus sagittis lorem feugiat. In fringilla diet consectetur. Morbi libero orci, consectetur in odio maximus felis. Lorem ipsum ullamcorper laoreet, lectus arcu pulvinar lorem ipsum interdum sed tempus sagittis lorem feugiat. In fringilla diet consectetur.</p>
+            </div>
+        </section>
+
+        <!-- Three -->
+        <section if.bind="!isAuthenticated" id="three" class="wrapper">
+            <div class="inner">
+                <header class="major">
+                    <h2>Convallis amet interdum</h2>
+                    <p>Sed magna in pharetra ultricies dolor sit amet consequat adipiscing lorem.</p>
+                </header>
+                <div class="posts">
+                    <section class="post">
+                        <a href="#" class="image"><img src="../styles/images/pic01.jpg" alt="" /></a>
+                        <div class="content">
+                            <h3>Ultricies sed lorem</h3>
+                            <p>Lorem ipsum dolor sit amet interdum arcu pulvinar lorem ipsum sed feugiat etiam sed magna adipiscing.</p>
+                            <a href="#" class="button">More</a>
+                        </div>
+                    </section>
+                    <section class="post">
+                        <a href="#" class="image"><img src="../styles/images/pic02.jpg" alt="" /></a>
+                        <div class="content">
+                            <h3>Imperdiet egestas</h3>
+                            <p>Lorem ipsum dolor sit amet interdum arcu pulvinar lorem ipsum sed feugiat etiam sed magna adipiscing.</p>
+                            <a href="#" class="button">More</a>
+                        </div>
+                    </section>
+                    <section class="post">
+                        <a href="#" class="image"><img src="../styles/images/pic03.jpg" alt="" /></a>
+                        <div class="content">
+                            <h3>Urna varius</h3>
+                            <p>Lorem ipsum dolor sit amet interdum arcu pulvinar lorem ipsum sed feugiat etiam sed magna adipiscing.</p>
+                            <a href="#" class="button">More</a>
+                        </div>
+                    </section>
+                    <section class="post">
+                        <a href="#" class="image"><img src="../styles/images/pic04.jpg" alt="" /></a>
+                        <div class="content">
+                            <h3>Elit ligula commodo</h3>
+                            <p>Lorem ipsum dolor sit amet interdum arcu pulvinar lorem ipsum sed feugiat etiam sed magna adipiscing.</p>
+                            <a href="#" class="button">More</a>
+                        </div>
+                    </section>
+                    <section class="post">
+                        <a href="#" class="image"><img src="../styles/images/pic05.jpg" alt="" /></a>
+                        <div class="content">
+                            <h3>Rutrum sed erat</h3>
+                            <p>Lorem ipsum dolor sit amet interdum arcu pulvinar lorem ipsum sed feugiat etiam sed magna adipiscing.</p>
+                            <a href="#" class="button">More</a>
+                        </div>
+                    </section>
+                    <section class="post">
+                        <a href="#" class="image"><img src="../styles/images/pic06.jpg" alt="" /></a>
+                        <div class="content">
+                            <h3>Cubilia metus</h3>
+                            <p>Lorem ipsum dolor sit amet interdum arcu pulvinar lorem ipsum sed feugiat etiam sed magna adipiscing.</p>
+                            <a href="#" class="button">More</a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+
+
+
+</template>

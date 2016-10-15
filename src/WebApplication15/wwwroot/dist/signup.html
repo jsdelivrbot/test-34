@@ -1,0 +1,58 @@
+<template>
+    <require from='nav-bar'></require>
+
+<!-- Header -->
+<header id="header">
+    <nav-bar router.bind="router"></nav-bar>
+</header>
+    <section id="two" class="wrapper sidebar left">
+        <div class="inner">
+            <header>
+
+                <h2>${heading}.</h2>
+                <p>You're just a few seconds away from your connections...</p>
+            </header>
+            <header class="major">
+
+                <form role="form" submit.delegate="signup()">
+                    <div class="form-group">
+                        <label for="firstname">First Name</label>
+                        <input type="text" value.bind="firstName" class="form-control" id="firstname" placeholder="First name">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Last Name</label>
+                        <input type="text" value.bind="lastName" class="form-control" id="lastname" placeholder="Last name">
+                    </div>
+                    <div class="form-group">
+                        <label for="userName">Username</label>
+                        <input type="text" value.bind="userName" class="form-control" id="username" placeholder="Username">
+                        <p class="text-muted">Your username will be used for logging into the application.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="text" value.bind="email" class="form-control" id="email" placeholder="Email address">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" value.bind="password" class="form-control" id="password" placeholder="Password">
+                        <p class="text-muted">Your password must have 6 or more characters, including a number or special character.</p>
+                    </div>
+
+                    <button type="submit" disabled.bind="!signUpComplete" class="button">${!signUpComplete ? 'Signing up...' : 'Sign up'}<span if.bind="!signUpComplete">&nbsp; <span class="glyphicon glyphicon-refresh glyphicon-spin"></span></span></button>
+                    <br /><br />
+                    <h6 class="help-block text-muted">By clicking "Sign up", you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</h6>
+                </form>
+
+            </header>
+
+                <span>
+                    Already have an account? &nbsp;&nbsp;<button class="button btn btn-link" click.delegate="login()">Log In</button>
+                </span>
+                <div if.bind="signupError">${signupError}</div>
+
+
+        </div>
+    </section>
+   
+</template>
+

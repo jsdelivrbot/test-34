@@ -15,13 +15,12 @@ export class Logout {
         // When we get to the logout route, the logout 
         // method on the auth service will be called  
         // and we will be redirected to the login view
-        this.authService.logout("#/login")
-        .then(response => {
-            console.log("Logged Out");
-        })
-        .catch(err => {
-            console.log("Error Logging Out");
-        });
+        //localStorage.removeItem('profilePhoto');
+       
+         this.authService.logout()
+       .then(() => {
+           this.authenticated = this.authService.isAuthenticated();
+       });
 
     };
 }

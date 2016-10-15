@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 namespace GolfConnector.Web.dtos
 {
     public class GolfMatchPlayerDto
-    {        
-        public int GolfMatchPlayerId { get; set; }       
+    {
+        public GolfMatchPlayerDto()
+        {
+
+        }
+        public ApplicationUser User { get; set; }               
         public DateTime? InviteDate { get; set; }
         public DateTime? JoinDate { get; set; }
         public string DisplayName { get; set; }
@@ -19,6 +23,8 @@ namespace GolfConnector.Web.dtos
         public bool JoinedByInvite { get; set; }
         public bool JoinedByThemselves { get; set; }
         public string UserId { get; set; }
+        public string Email { get; set; }
         public int? Handicap { get; set; }
+        public string InviteStatusName { get; set; }
     }
 }

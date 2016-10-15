@@ -1,5 +1,4 @@
 {
-  "name": "GolfConnector",
   "description": "Golf Connector Pro, Golf on your schedule",
   "author": "Dan Bergman <danrbergman@gmail.com>",
   "main": "dist/main.js",

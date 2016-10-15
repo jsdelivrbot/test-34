@@ -5,6 +5,29 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GolfConnector.Web.Models.Domain
 {
+    public enum InviteStatusName
+    {
+        Pending,
+        Accepted,
+        Declined
+    }
+    public class PlayerQueue
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int PlayerQueueId { get; set; }
+
+        public int GolfMatchId { get; set; }
+        [ForeignKey("GolfMatchId")]
+        public GolfMatch GolfMatch { get; set; }
+
+        // FK
+        [ForeignKey("UserId")]        
+        public virtual ApplicationUser User { get; set; }
+
+        public short QueueNumber { get; set; }
+
+    }
     public class GolfMatchPlayer
     {
         [Key]
@@ -20,8 +43,12 @@ namespace GolfConnector.Web.Models.Domain
         public GolfMatch GolfMatch { get; set; }
 
         public DateTime? InviteDate { get; set; }
-        public DateTime? JoinDate { get; set; }
-        public bool IsConfirmed { get; set; }
+
+        [ForeignKey("InviteStatusId")]
+        public int InviteStatusId { get; set; }
+        public InviteStatus InviteStatus { get; set; }
+
+        public bool IsMatchCreator { get; set; }
     }
     public class GolfMatch
     {
@@ -34,9 +61,7 @@ namespace GolfConnector.Web.Models.Domain
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int GolfMatchId { get; set; }
 
-        // created by
-        [ForeignKey("UserId")]
-        public virtual ApplicationUser User { get; set; }
+      
 
         // default 4
         public int NumberOfPlayers { get; set; }
@@ -59,6 +84,13 @@ namespace GolfConnector.Web.Models.Domain
         public virtual ICollection<GolfMatchPlayer> Players { get; set; }
 
     }
+    public class InviteStatus
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int InviteStatusId { get; set; }
+        public string Name { get; set; }
+    }
     public class ClubMemberEmail
     {
         public ClubMemberEmail()
@@ -76,7 +108,7 @@ namespace GolfConnector.Web.Models.Domain
         public Club Club { get; set; }
 
         public string Email { get; set; }
-        public bool IsAdmin { get; set; }
+        public bool IsClubAdmin { get; set; }
         public bool IsActiveMember { get; set; }
     }
     public class Club

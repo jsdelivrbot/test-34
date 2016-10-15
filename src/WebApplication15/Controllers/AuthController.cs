@@ -14,6 +14,7 @@ using System.IO;
 using GolfConnector.Web.Dtos;
 using System.Linq;
 using GolfConnector.Web.dtos;
+using GolfConnector.Web.Models.Domain;
 
 namespace GolfConnector.Web.Controllers
 {
@@ -355,7 +356,7 @@ namespace GolfConnector.Web.Controllers
         /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("login")]
+        [Route("~/auth/login")]
         public async Task<dynamic> Post([FromBody] LoginViewModel credentials)
         {
             if (!ModelState.IsValid)
@@ -424,11 +425,11 @@ namespace GolfConnector.Web.Controllers
                 claimsIdentity.AddClaim(new Claim("handicap", appUser.Handicap.HasValue ? appUser.Handicap.Value.ToString() : ""));
 
                 // todo: move this to seed?
-                //if (appUser.UserName == "timothy.cushman@guest.us.schott.com")
-                //{                   
-                //    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "administrator"));
-                //}
-                //ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
+                if (appUser.UserName == "timothy.cushman@guest.us.schott.com")
+                {
+                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "administrator"));
+                }
+                ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
 
                 //A refresh_token is just another jwt with a longer ttl than the access_token.
                 //The refresh tokens is then used to refresh the access_token, either automatically, 
@@ -438,15 +439,15 @@ namespace GolfConnector.Web.Controllers
                 DateTime? expires = DateTime.UtcNow.AddMinutes(1440); // 1440 = 1 day 
                 TokenDto tokenDto = new TokenDto();
 
-                //tokenDto.id_token = GetToken(credentials.login, expires, claimsIdentity, false);
-                //tokenDto.refresh_token = GetToken(credentials.login, expires, claimsIdentity, true);
-                //tokenDto.tokenExpires = expires;
-                //tokenDto.image = bytes;
-                //tokenDto.authenticated = true;
-                //tokenDto.userName = appUser.UserName;
-                //tokenDto.imagePath = appUser.ImagePath;
-                //tokenDto.displayName = appUser.FirstName + " " + appUser.LastName;
-                //tokenDto.handicap = appUser.Handicap.HasValue ? appUser.Handicap.Value.ToString() : "";
+                tokenDto.id_token = GetToken(credentials.login, expires, claimsIdentity, false);
+                tokenDto.refresh_token = GetToken(credentials.login, expires, claimsIdentity, true);
+                tokenDto.tokenExpires = expires;
+                tokenDto.image = bytes;
+                tokenDto.authenticated = true;
+                tokenDto.userName = appUser.UserName;
+                tokenDto.imagePath = appUser.ImagePath;
+                tokenDto.displayName = appUser.FirstName + " " + appUser.LastName;
+                tokenDto.handicap = appUser.Handicap.HasValue ? appUser.Handicap.Value.ToString() : "";
 
                 return new ObjectResult(tokenDto);
 
@@ -611,13 +612,7 @@ namespace GolfConnector.Web.Controllers
         {
             return await userManager.FindByIdAsync(HttpContext.User.GetUserId());
         }
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
+       
         #endregion
 
 

@@ -7,9 +7,9 @@ var sourcemaps = require('gulp-sourcemaps');
 var paths = require('../paths');
 var compilerOptions = require('../babel-options');
 var assign = Object.assign || require('object.assign');
-var notify = require("gulp-notify");
-var sass = require('gulp-sass');
+var notify = require('gulp-notify');
 var exec = require('child_process').exec;
+var sass = require('gulp-sass');
 
 // transpiles changed es6 files to SystemJS format
 // the plumber() call prevents 'pipe breaking' caused
@@ -17,10 +17,10 @@ var exec = require('child_process').exec;
 // https://www.npmjs.com/package/gulp-plumber
 gulp.task('build-system', function () {
     return gulp.src(paths.source)
-      .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
+      .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
       .pipe(changed(paths.output, { extension: '.js' }))
       .pipe(sourcemaps.init({ loadMaps: true }))
-        .pipe(to5(assign({}, compilerOptions.system())))
+      .pipe(to5(assign({}, compilerOptions.system())))
       .pipe(sourcemaps.write({ includeContent: false, sourceRoot: '/src' }))
       .pipe(gulp.dest(paths.output));
 });
@@ -31,24 +31,33 @@ gulp.task('build-html', function () {
       .pipe(changed(paths.output, { extension: '.html' }))
       .pipe(gulp.dest(paths.output));
 });
-
+// copies changed html files to the output directory
+gulp.task('build-images', function () {
+    return gulp.src(paths.images)
+      .pipe(changed(paths.css))
+      .pipe(gulp.dest(paths.imagesOutput));
+});
+// copies changed html files to the output directory
+gulp.task('build-fonts', function () {
+    return gulp.src(paths.fonts)
+      .pipe(changed(paths.css))
+      .pipe(gulp.dest(paths.fontsOutput));
+});
 // copies changed css files to the output directory
 gulp.task('build-css', function () {
     return gulp.src(paths.scss)
-      .pipe(plumber())
+        .pipe(plumber())
       .pipe(changed(paths.css, { extension: '.css' }))
-      .pipe(sourcemaps.init())
-      .pipe(sass())
-      .pipe(sourcemaps.write())
+        .pipe(sourcemaps.init())
+        .pipe(sass())
+        .pipe(sourcemaps.write())
       .pipe(gulp.dest(paths.css));
 });
-
 // runs jspm install from within Gulp
 gulp.task('build-jspm', function () {
     exec('jspm install', function (err, stout, stderr) {
     });
 });
-
 // this task calls the clean task (located
 // in ./clean.js), then runs the build-system
 // and build-html tasks in parallel
@@ -56,7 +65,7 @@ gulp.task('build-jspm', function () {
 gulp.task('build', function (callback) {
     return runSequence(
       'clean',
-      ['build-system', 'build-html', 'build-css'],
+      ['build-system', 'build-html', 'build-css', 'build-images', 'build-fonts', 'build-jspm'],
       callback
     );
 });

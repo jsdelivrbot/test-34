@@ -12,6 +12,8 @@ namespace GolfConnector.Web.Models
              Database.EnsureCreated();
         }
 
+        public DbSet<PlayerQueue> PlayerQueue { get; set; }
+        public DbSet<InviteStatus> InviteStatus { get; set; }
         public DbSet<GolfMatchPlayer> GolfMatchPlayers { get; set; }
         public DbSet<ClubMemberEmail> ClubMemberEmails { get; set; }
         public DbSet<Club> Clubs { get; set; }
