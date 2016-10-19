@@ -6,7 +6,7 @@ import * as log from 'toastr';
 import _ from 'underscore';
 
 @inject(HttpClient)
-export class ScheduleDataService {
+export class GolfMatchDataService {
 
     constructor(http) {
         http.configure(httpConfig);
@@ -15,8 +15,8 @@ export class ScheduleDataService {
   
 
 
-    get schedules() {
-        return this.http.fetch('/api/schedule')           
+    get golfmatches() {
+        return this.http.fetch('/api/golfmatch')           
             .then(response => response.json())
             //.then(response => _.sortBy(response, "StartDate"))
             .catch(function(ex) {

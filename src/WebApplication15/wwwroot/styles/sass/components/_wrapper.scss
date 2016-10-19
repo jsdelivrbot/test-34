@@ -17,6 +17,7 @@
 		> .inner {
 			margin: 0 auto;
 			width: 70em;
+           
 		}
 
 		&.style1 {
@@ -32,21 +33,22 @@
 		}
 
 		&.style4 {
+
 			@include color(accent4);
 		}
 
 		&.cta {
-			@include banner-bg('../../images/bakerhill_landing.jpg', true);
+			@include banner-bg('images/bakerhill_landing.jpg', true);
 			@include color-typography(accent4);
 			@include color-button(accent4);
 
 			> .inner {
 				@include vendor('display', 'flex');
-
+              
 				> * {
 					padding-left: (_size(element-margin) * 0.75);
 					-ms-flex: auto;
-					width: 50%;
+					width: 50%; 
 				}
 
 				> :first-child {

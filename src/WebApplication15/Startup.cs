@@ -38,11 +38,11 @@ namespace GolfConnector.Web
         public Task SendEmailAsync(string email, string subject, string message)
         {
             // Credentials:          
-            var sentFrom = "no-reply";
+            var sentFrom = "golfconnector@gmail.com";
 
             // Configure the client:
             System.Net.Mail.SmtpClient client =
-                new System.Net.Mail.SmtpClient("smtp.google.com");
+                new System.Net.Mail.SmtpClient("smtp.gmail.com");
 
             client.Port = 465;
             client.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;

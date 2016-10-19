@@ -16,8 +16,7 @@ namespace GolfConnector.Web.dtos
             StartDate = golfMatch.StartDate;
             Comments = golfMatch.Comments;
             NumberOfHoles = golfMatch.NumberOfHoles;
-            NumberOfPlayers = golfMatch.NumberOfPlayers;
-            //CreatedByUserId = golfMatch.User.Id;
+            NumberOfPlayers = golfMatch.NumberOfPlayers;            
             Time = golfMatch.Time;
             GolfMatchDateIso = golfMatch.GolfMatchDateIso;
 
@@ -26,7 +25,9 @@ namespace GolfConnector.Web.dtos
                 DisplayName = p.User.FirstName + " " + p.User.LastName,
                 Email = p.User.Email,
                 Handicap = p.User.Handicap,
-              //  IsInMatch    = p.IsConfirmed
+                IsMatchCreator = p.IsMatchCreator,
+                
+            
             }));
 
         }
@@ -40,7 +41,7 @@ namespace GolfConnector.Web.dtos
         public string Comments { get; set; }
         public string Time { get; set; }
         public string ClubName { get; set; }
-        public string CreatedByUserId { get; set; }
+        public bool IsMatchCreator { get; set; }
 
         public List<GolfMatchPlayerDto> Players { get; set; } = new List<GolfMatchPlayerDto>();
     }

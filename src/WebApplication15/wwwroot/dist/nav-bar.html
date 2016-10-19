@@ -3,7 +3,7 @@
         <h1 id="logo"><a href="/#">Golf Connector Pro</a></h1>
         <nav id="nav">
             <ul>
-                <li if.bind="auth.isAuthenticated()"><a href="#"><i class="fa fa-bell"></i></a></li>
+                <li if.bind="auth.isAuthenticated"><a href="#"><i class="fa fa-bell"></i></a></li>
                 <li repeat.for="row of router.navigation | authFilter: isAuthenticated">
                     <a href.bind="row.href">${row.title}</a>
                 </li>

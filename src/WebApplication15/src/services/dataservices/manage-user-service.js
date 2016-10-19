@@ -17,32 +17,7 @@ export class ManageUserService {
 
     }
 
-    refresh(){
-       
-        let prevToken = localStorage.getItem('aurelia_id_token');
-        console.log('sending token');
-       
-        this.http.fetch('/api/oauth/token/refresh',{
-            headers: {
-                'Authorization': 'Bearer ' + prevToken
-            }, 
-            method: 'post',
-            body: json(prevToken)      
-        })
-            .then(response => response.json())
-          .then((data) => {
-
-              if(data.id_token){
-
-                  console.log('resetting token');
-                  localStorage.setItem('aurelia_id_token', data.id_token);  
-                  localStorage.setItem("profile-photo", data.image);
-              }
-                                                                                               
-          }).catch((e) => {           
-              location.href="/#/login";           
-          });
-    }
+    
     updateUserProfileImage(selectFile) {
 
         return this.http.fetch('/api/user/profile/image', 
@@ -89,7 +64,7 @@ export class ManageUserService {
     }
     resetPassword(model){
 
-        return this.http.fetch('/api/oauth/token/resetPassword', 
+        return this.http.fetch('/api/auth/resetPassword', 
               { 
                   method: 'post', 
                   headers: {
@@ -111,7 +86,7 @@ export class ManageUserService {
     }
 
     forgotPassword(email){
-        return this.http.fetch('/api/oauth/token/forgotPassword', 
+        return this.http.fetch('/api/auth/forgotPassword', 
               { 
                   method: 'post', 
                   headers: {

@@ -28,7 +28,9 @@ namespace GolfConnector.Web.Controllers
                  NumberOfPlayers = x.NumberOfPlayers,
                  Comments = x.Comments,
                  Time = x.Time,                
-                 GolfMatchDateIso = x.GolfMatchDateIso
+                 GolfMatchDateIso = x.GolfMatchDateIso,
+                 ClubName = x.Club.Name,
+               
              };
 
         public GolfMatchController(UserManager<ApplicationUser> userManager, IHostingEnvironment environment, IGolfConnectorDbContext db)
@@ -119,7 +121,8 @@ namespace GolfConnector.Web.Controllers
                              IsInMatch = true,
                              Handicap = su.User.Handicap,
                              InviteDate = su.InviteDate.Value,
-                             InviteStatusName = su.InviteStatus.Name
+                             InviteStatusName = su.InviteStatus.Name,
+                             IsMatchCreator = su.IsMatchCreator
                          }).ToList();
 
             foreach (var user in users)
@@ -175,7 +178,8 @@ namespace GolfConnector.Web.Controllers
                              User = su.User,
                              DisplayName = su.User.FirstName + " " + su.User.LastName,
                              IsInMatch = true,
-                             Handicap = su.User.Handicap
+                             Handicap = su.User.Handicap,
+                             IsMatchCreator = su.IsMatchCreator
 
                          }).ToList();
 
@@ -189,8 +193,6 @@ namespace GolfConnector.Web.Controllers
                             Path.Combine(environment.WebRootPath + "\\uploads", user.User.UserName + ".jpeg")));
 
                     user.ImageBytes = "data:image/jpeg;base64," + bytes;
-
-
                 }
                 catch (Exception ex)
                 {
@@ -204,6 +206,7 @@ namespace GolfConnector.Web.Controllers
 
             golfMatch.Players = new List<GolfMatchPlayerDto>();
             golfMatch.Players.AddRange(users);
+
             return new ObjectResult(golfMatch);
         }
                
@@ -220,7 +223,8 @@ namespace GolfConnector.Web.Controllers
             // get the upcoming (current) matches
             var matches = (from s in _db.GolfMatches
                              join u in _db.GolfMatchPlayers on s.GolfMatchId equals u.GolfMatchId
-                             where DateTime.Parse(s.StartDate) >= DateTime.Now && u.User.Id != appUser.Id
+                             where DateTime.Parse(s.StartDate) >= DateTime.Now 
+                             && u.User.Id != appUser.Id
                              select s).ToList();
 
             foreach (var s in matches)
@@ -236,17 +240,16 @@ namespace GolfConnector.Web.Controllers
                                  User = su.User,
                                  DisplayName = su.User.FirstName + " " + su.User.LastName,
                                  IsInMatch = true,
-                                 Handicap = su.User.Handicap
-
+                                 Handicap = su.User.Handicap,
+                                 IsMatchCreator = su.IsMatchCreator
                              }).ToList();
 
                 var currentUserFound = false;
                 foreach (var user in users)
                 {
                     if (user.User.Id == appUser.Id)
-                    {
                         currentUserFound = true;
-                    }
+
                     string bytes = "";
                     try
                     {
@@ -270,8 +273,7 @@ namespace GolfConnector.Web.Controllers
                     scheduleDto.GolfMatchId = s.GolfMatchId;
                     scheduleDto.NumberOfHoles = s.NumberOfHoles;
                     scheduleDto.NumberOfPlayers = s.NumberOfPlayers;
-                    scheduleDto.Time = s.Time;
-                    //scheduleDto.UserName = s.User.FirstName + " " + s.User.LastName;
+                    scheduleDto.Time = s.Time;                
                     scheduleDto.StartDate = s.StartDate;
                     scheduleDto.GolfMatchDateIso = s.GolfMatchDateIso;
 
@@ -297,13 +299,15 @@ namespace GolfConnector.Web.Controllers
             // get the upcoming (current) golf matches
             var golfMatches = (from s in _db.GolfMatches
                              join u in _db.GolfMatchPlayers on s.GolfMatchId equals u.GolfMatchId
-                             where DateTime.Parse(s.StartDate) >= DateTime.Now && u.User.Id == appUser.Id
+                             where DateTime.Parse(s.StartDate) >= DateTime.Now
+                             && u.User.Id == appUser.Id
                              select s).ToList();
 
             foreach (var s in golfMatches)
             {
                 s.Time = DateTime.Parse(s.Time).ToLocalTime().ToString();
                 s.StartDate = DateTime.Parse(s.StartDate).ToLocalTime().ToString();
+
                 var players = (from su in _db.GolfMatchPlayers
                              where su.GolfMatchId == s.GolfMatchId
                              select new GolfMatchPlayerDto
@@ -311,7 +315,8 @@ namespace GolfConnector.Web.Controllers
                                  User = su.User,
                                  DisplayName = su.User.FirstName + " " + su.User.LastName,
                                  IsInMatch = true,
-                                 Handicap = su.User.Handicap
+                                 Handicap = su.User.Handicap,
+                                 IsMatchCreator = su.IsMatchCreator
 
                              }).ToList();
 
@@ -325,11 +330,6 @@ namespace GolfConnector.Web.Controllers
                                 Path.Combine(environment.WebRootPath + "\\uploads", user.User.UserName + ".jpeg")));
 
                         user.ImageBytes = "data:image/jpeg;base64," + bytes;
-
-                        if ((user.User.FirstName + " " + user.User.LastName) == appUser.UserName)
-                        {
-
-                        }
                     }
                     catch (Exception ex)
                     {
@@ -345,8 +345,7 @@ namespace GolfConnector.Web.Controllers
                 golfMatchDto.GolfMatchId = s.GolfMatchId;
                 golfMatchDto.NumberOfHoles = s.NumberOfHoles;
                 golfMatchDto.NumberOfPlayers = s.NumberOfPlayers;
-                golfMatchDto.Time = s.Time;
-                //golfMatchDto.UserName = s.User.FirstName + " " + s.User.LastName;
+                golfMatchDto.Time = s.Time;            
                 golfMatchDto.StartDate = s.StartDate;
                 golfMatchDto.GolfMatchDateIso = s.GolfMatchDateIso;
 
@@ -372,7 +371,7 @@ namespace GolfConnector.Web.Controllers
             var golfMatches = (from s in _db.GolfMatches
                              join u in _db.GolfMatchPlayers on s.GolfMatchId equals u.GolfMatchId
                              where DateTime.Parse(s.StartDate) >= DateTime.Now 
-                             //&& s.User.Id == appUser.Id
+                             && u.User.Id == appUser.Id && u.IsMatchCreator
                              select s).ToList();
 
             foreach (var s in golfMatches)
@@ -389,7 +388,8 @@ namespace GolfConnector.Web.Controllers
                                  IsInMatch = true,
                                  Handicap = su.User.Handicap,
                                  InviteDate = su.InviteDate.Value,
-                                 InviteStatusName = su.InviteStatus.Name
+                                 InviteStatusName = su.InviteStatus.Name,
+                                 IsMatchCreator = su.IsMatchCreator
 
                              }).ToList();
 
@@ -403,29 +403,21 @@ namespace GolfConnector.Web.Controllers
                                 Path.Combine(environment.WebRootPath + "\\uploads", user.User.UserName + ".jpeg")));
 
                         user.ImageBytes = "data:image/jpeg;base64," + bytes;
-
-                        if ((user.User.FirstName + " " + user.User.LastName) == appUser.UserName)
-                        {
-                            user.IsMatchCreator = true;
-                        }
                     }
                     catch (Exception ex)
                     {
 
                         // Log.Error(ex.Message);
                     }
-
                 }
 
                 var golfMatchDto = new GolfMatchDto
                 {
-
                     Comments = s.Comments,
                     GolfMatchId = s.GolfMatchId,
                     NumberOfHoles = s.NumberOfHoles,
                     NumberOfPlayers = s.NumberOfPlayers,
-                    Time = s.Time,
-                    //UserName = s.User.FirstName + " " + s.User.LastName,
+                    Time = s.Time,                  
                     StartDate = s.StartDate,
                     GolfMatchDateIso = s.GolfMatchDateIso
                 };
@@ -438,7 +430,6 @@ namespace GolfConnector.Web.Controllers
 
             return golfMatchDtos;
         }
-
 
         // POST api/values
         [HttpPost]
@@ -453,17 +444,15 @@ namespace GolfConnector.Web.Controllers
 
                 // get club id of selected club
                 var club = _db.Clubs.Where(c => c.Name == match.ClubName).Single();
-
-                var d = DateTime.Parse(match.StartDate + " " + match.Time);
+               
                 var newGolfMatch = new GolfMatch()
                 {
-                    GolfMatchDateIso = d.ToUniversalTime().ToString("o"),
+                    GolfMatchDateIso = DateTime.Parse(match.StartDate + " " + match.Time).ToUniversalTime().ToString("o"),
                     StartDate = match.StartDate,
                     Time = DateTime.Parse(match.Time).ToString("HH:mm:ss"),
                     NumberOfPlayers = match.NumberOfPlayers,
                     NumberOfHoles = match.NumberOfHoles,
-                    Comments = match.Comments,
-                    //User = createdByUser,
+                    Comments = match.Comments,                   
                     ClubId = club.ClubId
                 };
 
@@ -475,21 +464,25 @@ namespace GolfConnector.Web.Controllers
                     var appPlayer = GetPlayer(player);
 
                     if (appPlayer != null)
-                    {
+                    {                         
+                        bool isMatchCreator = false;
+                        if (appPlayer == createdByUser)
+                            isMatchCreator = true;
+
                         _db.GolfMatchPlayers.Add(new GolfMatchPlayer()
                         {
                             GolfMatchId = newGolfMatch.GolfMatchId,
-                            User = appPlayer,                           
+                            User = appPlayer,
+                            IsMatchCreator = isMatchCreator,
                             InviteStatus = new InviteStatus()
                             {
-                                Name = InviteStatusName.Pending.ToString()
+                                Name = isMatchCreator ? InviteStatusName.Accepted.ToString() : InviteStatusName.Pending.ToString()
                             },
                         });
                     }
                 }
 
                 _db.SaveChanges();
-
 
                 return new ObjectResult(newGolfMatch);
             }
@@ -516,7 +509,7 @@ namespace GolfConnector.Web.Controllers
         {
             var player = _db.GolfMatchPlayers.Where(u => u.GolfMatchId == id && u.User.Id == playerId).Select(u => u).SingleOrDefault();
 
-            if (player != null)
+            if (player != null && !player.IsMatchCreator)
             {
                 _db.GolfMatchPlayers.Remove(player);
                 _db.SaveChanges();

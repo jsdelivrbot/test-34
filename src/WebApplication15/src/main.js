@@ -1,9 +1,10 @@
-﻿import config from './authConfig';
+﻿
+import config from './authConfig';
 
 export function configure(aurelia) {
     aurelia.use
       .standardConfiguration()
-      .developmentLogging().plugin('aurelia-api', config => {
+      .plugin('aurelia-api', config => {
           config
             .registerEndpoint('auth').registerEndpoint('api');
       })
@@ -13,14 +14,14 @@ export function configure(aurelia) {
    
     aurelia.use.feature('configs');  
    
- 
+    //aurelia.use.plugin('aurelia-modal');
     aurelia.use.plugin('aurelia-validatejs');     
     aurelia.use.plugin('aurelia-dialog');
     aurelia.use.plugin('aurelia-animator-velocity');
 
     let converterPath = 'resources/converters/';
     aurelia.use.globalResources( 
-       
+       'schedule/match-modal',
         converterPath + 'json',
         converterPath + 'upper',
         converterPath + 'lower',

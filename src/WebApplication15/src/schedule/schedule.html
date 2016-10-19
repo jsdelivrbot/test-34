@@ -1,21 +1,21 @@
 ﻿<template>
-    <section>
+    
+    <modal showing.bind="true"><h1>Some Heading</h1><p>My custom content in here</p></modal>
+   
+     <section>
         <require from='nav-bar'></require>
         <require from="schedule/calendar"></require>
-
-        <!-- Header -->
-
+       
         <nav-bar router.bind="router"></nav-bar>
 
 
         <div if.bind="isAuthenticated">
 
 
-
-
-
+          
             <!-- Main -->
             <section id="main" class="wrapper sidebar left" style="margin-top:18px;">
+
                 <div class="inner">
 
                     <!-- Content -->
@@ -121,156 +121,21 @@
                         <br />
                         <button if.bind="eventView" class="button special" click.delegate="closeEvent()"><i class="fa fa-arrow-left"></i>&nbsp;Back to Calendar</button>
 
+                        <!-- calendar -->
+                        <calendar show.bind="calendarView && !eventView" id="golf-calendar" style="cursor:pointer;" events.bind="events" view.bind="view" weekends.bind="true" day-click.bind="dayClick" event-click.bind="eventClicked" options.bind="options"></calendar>
+                       
+                       
+                         <!-- modal -->
+                        <dialog ref.view-model="match-modal">
 
-
-
-                        <a if.bind="!eventView" style="float:right;" class="button special" click.delegate="toggleCreateMode()">
-                            Create
-                        </a>
-                        <span if.bind="!eventView" style="float:left;margin-bottom:5px;">
-
-                            <select data-easein="slideDownIn" style="width:200px;display:inline;" value.bind="selectedView" change.delegate="setSelectedView()">
-                                <option value="news">News</option>
-                                <option value="my upcoming" selected="selected">My Upcoming</option>
-                                <option value="joinable">Joinable</option>
-                                <option value="all">All</option>
-
-
-                            </select>
-                            <br />
-                        </span>
-
-                        <div class="clearfix"></div>
-                        <br />
-                        <br />
-                        <br />
-                        <section class="sessions-group-holder">
-
-                            <!-- menu -->
-                            <div class="menu-container" show.bind="(listView || calendarView) && !eventView">
-                                <div class="list-item">
-                                    <a title="view list" class="view-icon list-icon" class.bind="listView ? 'view-icon-selected' : ''" click.delegate="showListView()"><i class="fa fa-list"></i></a>
-
-                                    <a title="view calendar" class="view-icon " class.bind="calendarView ? 'view-icon-selected' : ''" click.delegate="showCalendarView()"><i class="fa fa-calendar calendar-icon"></i></a>
-                                </div>
-                                <div class="list-item-end">
-                                    ${schedules.length} match${schedules.length > 1 ? 'es' : ''}
-                                </div>
-                            </div>
-
-                            <!-- calendar -->
-                            <calendar show.bind="calendarView && !eventView" id="calendar" style="cursor:pointer;" events.bind="events" view.bind="view" weekends.bind="true" day-click.bind="dayClick" event-click.bind="eventClicked" options.bind="options"></calendar>
-
-
-                            <h3 style="margin-top:30px;">
-                                <span if.bind="schedules.length === 0">
-                                    Sorry, we couldn't find any ${selectedView} matches for you.
-                                    <br /><br />
-                                    <a href="#" class="alt-color-text-2 link" click.delegate="toggleCreateMode()">Create your own match?</a>
-                                </span>
-                            </h3>
-
-
-
-
-                            <!-- list -->
-                            <div class="list-subheading" show.bind="!calendarView && !eventView && schedules.length > 0">
-                                UPCOMING
-                            </div>
-                            <div repeat.for="s of schedules" class="schedule-list one-edge-shadow" show.bind="!calendarView && !eventView">
-                                <div class="list-container schedule">
-                                    <section class="list-item">
-                                        <!-- Date and Time -->
-                                        <span class="list-month">
-                                            ${s.ScheduleDateIso | dateFormat: 'dddd MMM D'}
-                                        </span>
-                                        <br />
-                                        <span class="list-time">
-                                            @ ${s.ScheduleDateIso | dateFormat: 'h:mm A'}
-                                        </span>
-
-                                    </section>
-                                    <section class="list-item">
-                                        <strong>${s.NumberOfHoles}</strong> holes
-                                    </section>
-
-                                    <!-- Actions -->
-                                    <section class="list-item-end">
-                                        <!-- invite -->
-                                        <a if.bind="isCurrentUserMatchCreator(s.UserName) && !isUserInThisSlot(s.Players[p].DisplayName) && s.Players.length < s.NumberOfPlayers" click.delegate="addPlayerToMatch(s)">
-                                            <i style="font-size:1.4em;" class="fa fa-envelope"></i>
-                                        </a>
-                                        <!-- edit -->
-                                        <a if.bind="isCurrentUserMatchCreator(s.UserName)" click.delegate="rescheduleMatch(s)">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-                                        <!-- cancel -->
-                                        <a if.bind="isCurrentUserMatchCreator(s.UserName)" click.delegate="cancelMatch(s)">
-                                            <i class="fa fa-remove"></i>
-                                        </a>
-                                    </section>
-                                </div>
-                                <div if.bind="s.Comments" class="schedule session-date"><i class="fa fa-comment-o"></i><em>&nbsp;${s.Comments}</em></div>
-                                <!-- Players -->
-                                <div class="list-container schedule">
-                                    <div class="flexcontainer schedule">
-
-                                        <div class="invited-players">
-                                            <h4 style="display:inline;">
-                                                Players&nbsp;&nbsp;
-                                                <a href="#" style="color:blue;font-size:.8em;" if.bind="isCurrentUserMatchCreator(s.UserName) && !isUserInThisSlot(s.Players[p].DisplayName) && s.Players.length < s.NumberOfPlayers" click.delegate="joinMatch(s)">
-                                                    Join!
-                                                </a>
-                                                <!--<i style="font-size:1.2em;" class="fa fa-plus-circle" click.delegate="addPlayerToMatch(s)"></i>-->
-                                            </h4>
-                                            <!--<br/>
-                                            <a href="#" if.bind="isCurrentUserMatchCreator(s.UserName) && !isUserInThisSlot(s.Players[p].DisplayName) && s.Players.length < s.NumberOfPlayers" click.delegate="joinMatch(s)">
-                                                Join!
-                                            </a>-->
-                                            <div repeat.for="p of s.NumberOfPlayers">
-                                                <div class="player-image-container" if.bind="s.Players[p].DisplayName">
-
-                                                    <div class="player-image">
-                                                        <img src.bind="s.Players[p].ImageBytes" class="extra-small-user glow" />
-                                                    </div>
-                                                    <div class="player-name" title="HCP: ${s.Players[p].Handicap}">
-                                                        ${s.Players[p].DisplayName}
-                                                        <!--<br/>
-                                                        <span>HCP: ${s.Players[p].Handicap}</span>-->
-                                                        <!--<br/>
-                                                        <a href="#"
-                                                           click.delegate="removePlayerFromMatch(s, s.Players[p].DisplayName)">
-                                                            remove
-                                                        </a>-->
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="waitinglist">
-                                            <h4 style="display:inline;">Waiting List <i style="font-size:1.4em;" class="fa fa-plus-circle"></i></h4>
-                                            <!--<br/>
-                                            <a href="#" if.bind="isCurrentUserMatchCreator(s.UserName) && !isUserInThisSlot(s.Players[p].DisplayName) && s.Players.length < s.NumberOfPlayers" click.delegate="joinMatch(s)">
-                                               Add me to waiting list
-                                            </a>-->
-                                            <div repeat.for="p of s.NumberOfPlayers">
-                                                <div style="font-size:.9em;" class="player-image-container">
-                                                    <span class="badge text-info">${$index + 1}.</span>
-
-                                                    <div class="player-name">
-                                                        &nbsp;${s.Players[p].DisplayName}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                        </section>
+                        </dialog>
+                        <!--<dialog ref.view-model="match-modal">
+                            <title>Title</title>
+                            <article>Body content</article>
+                            <footer>Footer</footer>
+                        </dialog>-->
+                        <a class="btn btn-default au-target" click.delegate="openDialog('schedule/match-modal')">Demo</a>
+                       
                     </div>
 
                     <!-- Sidebar -->

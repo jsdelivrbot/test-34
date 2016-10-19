@@ -14,10 +14,11 @@ export class Session {
 
         try {
 
+            var token = localStorage.getItem('aurelia_authentication');
             let base64Url = token.split('.')[1];
-               
-            // decode the base64 string into a JSON object.
-            this.currentUser = JSON.parse(window.atob(base64Url)); 
+            let base64    =  base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        
+            this.currentUser = JSON.parse(decodeURIComponent(escape(window.atob(base64))));           
             
             //this.currentUser.image = localStorage.getItem("profile-photo");
             this.currentUser.userName = this.currentUser.unique_name;           

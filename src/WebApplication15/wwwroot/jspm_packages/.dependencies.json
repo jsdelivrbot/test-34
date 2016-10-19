@@ -1807,5 +1807,12 @@
     "buffer": "github:jspm/nodelibs-buffer@^0.1.0",
     "process": "github:jspm/nodelibs-process@^0.1.0"
   },
-  "npm:lodash@4.16.4": {}
+  "npm:lodash@4.16.4": {},
+  "npm:fullcalendar@2.9.1": {
+    "jquery": "npm:jquery",
+    "moment": "npm:moment",
+    "process": "github:jspm/nodelibs-process@^0.1.0"
+  },
+  "npm:moment@2.15.1": {},
+  "github:vheissu/aurelia-modal@1.0.0": {}
 }

@@ -33,7 +33,7 @@ export class App {
      
         try {
             
-            var token = localStorage.getItem('aurelia_id_token');
+            var token = localStorage.getItem('aurelia_authentication');
             let base64Url = token.split('.')[1];
             let base64    =  base64Url.replace(/-/g, '+').replace(/_/g, '/');
         

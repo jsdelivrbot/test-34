@@ -6,6 +6,43 @@
 @import url('http://fonts.googleapis.com/css?family=Open+Sans:300italic,700italic,700,300');
 
 /*
+	Custom Styles for Golf Connector
+    Dan Bergman
+*/ 
+.fc-widget-header table {
+    margin-bottom: 0;
+}
+.fc-button{
+    line-height: 2 !important;
+}
+/*
+	Loading message
+*/
+
+.splash {
+    text-align: center;
+    margin: 10% 0 0 0;
+    box-sizing: border-box;
+}
+.splash .message {
+    color: #48692A;
+    font-size: 3.2em;
+    line-height: 72px;
+   
+    text-transform: uppercase;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.spin-color{
+    color: #2F373F;
+}
+
+.top-space{
+    margin-top:25px;
+    }
+
+
+
+/*
 	Archetype by Pixelarity
 	pixelarity.com @pixelarity
 	License: pixelarity.com/license

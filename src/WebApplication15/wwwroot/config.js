@@ -34,6 +34,7 @@ System.config({
     "aurelia-logging": "npm:aurelia-logging@1.0.0",
     "aurelia-logging-console": "npm:aurelia-logging-console@1.0.0",
     "aurelia-metadata": "npm:aurelia-metadata@1.0.1",
+    "aurelia-modal": "github:vheissu/aurelia-modal@1.0.0",
     "aurelia-pal": "npm:aurelia-pal@1.0.0",
     "aurelia-pal-browser": "npm:aurelia-pal-browser@1.0.0",
     "aurelia-path": "npm:aurelia-path@1.1.1",
@@ -54,9 +55,11 @@ System.config({
     "clean-css": "npm:clean-css@3.4.20",
     "components/jquery": "github:components/jquery@2.2.4",
     "core-js": "npm:core-js@1.2.7",
+    "css": "github:systemjs/plugin-css@0.1.31",
     "fetch": "github:github/fetch@1.0.0",
     "filesaver.js": "npm:filesaver.js@0.2.0",
     "font-awesome": "npm:font-awesome@4.6.3",
+    "fullcalendar": "npm:fullcalendar@2.9.1",
     "gulp-sass": "npm:gulp-sass@2.3.2",
     "http-proxy-middleware": "npm:http-proxy-middleware@0.17.2",
     "intro.js": "npm:intro.js@2.3.0",
@@ -797,6 +800,11 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "rimraf": "npm:rimraf@2.5.4",
       "stream": "github:jspm/nodelibs-stream@0.1.0"
+    },
+    "npm:fullcalendar@2.9.1": {
+      "jquery": "npm:jquery@2.2.4",
+      "moment": "npm:moment@2.15.1",
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:gauge@2.6.0": {
       "aproba": "npm:aproba@1.0.4",

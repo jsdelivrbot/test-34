@@ -1,4 +1,4 @@
-﻿import {AuthorizeStep} from 'aurelia-authentication';
+﻿import {AuthenticateStep} from 'aurelia-authentication';
 import {inject} from 'aurelia-framework';
 import {Router} from 'aurelia-router';
 
@@ -35,7 +35,7 @@ configure() {
     var self = this;
     var appRouterConfig = function(config) {
         config.title = 'GolfConnector';        
-        config.addPipelineStep('authorize', AuthorizeStep);
+        config.addPipelineStep('authorize', AuthenticateStep);
 
         // Here, we describe the routes we want along with information about them
         // such as which they are accessible at, which module they use, and whether

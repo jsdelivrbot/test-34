@@ -3,7 +3,7 @@
 System.register(['aurelia-framework', 'jquery', 'moment', 'fullcalendar'], function (_export, _context) {
     "use strict";
 
-    var inject, noView, bindable, bindingMode, customElement, BindingEngine, inlineView, $, moment, fullCalendar, _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, calendar;
+    var inject, noView, bindable, bindingMode, customElement, BindingEngine, inlineView, $, moment, fullCalendar, _dec, _dec2, _dec3, _class, _desc, _value, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, calendar;
 
     function _initDefineProp(target, property, descriptor, context) {
         if (!descriptor) return;
@@ -77,17 +77,15 @@ System.register(['aurelia-framework', 'jquery', 'moment', 'fullcalendar'], funct
 
                     _classCallCheck(this, calendar);
 
-                    _initDefineProp(this, 'weekends', _descriptor, this);
+                    _initDefineProp(this, 'dayClick', _descriptor, this);
 
-                    _initDefineProp(this, 'dayClick', _descriptor2, this);
+                    _initDefineProp(this, 'eventClick', _descriptor2, this);
 
-                    _initDefineProp(this, 'eventClick', _descriptor3, this);
+                    _initDefineProp(this, 'events', _descriptor3, this);
 
-                    _initDefineProp(this, 'events', _descriptor4, this);
+                    _initDefineProp(this, 'options', _descriptor4, this);
 
-                    _initDefineProp(this, 'options', _descriptor5, this);
-
-                    _initDefineProp(this, 'view', _descriptor6, this);
+                    _initDefineProp(this, 'view', _descriptor5, this);
 
                     this.subscription = null;
 
@@ -121,19 +119,26 @@ System.register(['aurelia-framework', 'jquery', 'moment', 'fullcalendar'], funct
                     if (this.calendar) this.calendar.fullCalendar('refetchEvents');
                 };
 
+                calendar.prototype.isPast = function isPast(date) {
+                    var today = moment().format();
+                    return moment(today).isAfter(date);
+                };
+
                 calendar.prototype.attached = function attached() {
                     var _this3 = this;
 
                     this.calendar = $(this.element);
-                    var eventSource = function eventSource(start, end, timezone, callback) {
-                        callback(_this3.events);
-                    };
 
-                    var defaultValues = {
-                        defaultView: this.view || 'week',
-
+                    var defaultOptions = {
+                        defaultView: this.view || 'agendaWeek',
+                        header: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'month,agendaWeek'
+                        },
+                        theme: false,
                         allDaySlot: false,
-                        weekends: this.weekends,
+                        weekends: true,
                         firstDay: 1,
                         dayClick: function dayClick(date, jsEvent, view) {
                             return _this3.dayClick(date, jsEvent, view);
@@ -141,34 +146,51 @@ System.register(['aurelia-framework', 'jquery', 'moment', 'fullcalendar'], funct
                         eventClick: function eventClick(event) {
                             return _this3.eventClick(event);
                         },
-                        events: eventSource
+                        events: function events(start, end, timezone, callback) {
+
+                            var data = _this3.events.map(function (event) {
+                                event.editable = !_this3.isPast(event.start);
+                                console.log(event);
+                                return event;
+                            });
+                            if (data) {
+                                console.log('hi');
+                                console.log(callback);
+
+                                callback(_this3.events);
+                            }
+                        },
+
+                        editable: true,
+                        handleWindowResize: true,
+
+                        minTime: '07:30:00',
+                        maxTime: '15:00:00',
+                        columnFormat: {
+                            week: 'ddd' },
+                        displayEventTime: false,
+                        allDayText: 'Online/TBD'
                     };
 
-                    console.log(this.calendar.fullCalendar);
-                    this.calendar.fullCalendar(Object.assign(defaultValues, this.options));
+                    this.calendar.fullCalendar(Object.assign(defaultOptions, this.options));
                 };
 
                 return calendar;
-            }(), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'weekends', [bindable], {
-                enumerable: true,
-                initializer: function initializer() {
-                    return true;
-                }
-            }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'dayClick', [bindable], {
+            }(), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'dayClick', [bindable], {
                 enumerable: true,
                 initializer: null
-            }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'eventClick', [bindable], {
+            }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'eventClick', [bindable], {
                 enumerable: true,
                 initializer: null
-            }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'events', [bindable], {
+            }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, 'events', [bindable], {
                 enumerable: true,
                 initializer: function initializer() {
                     return [];
                 }
-            }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'options', [bindable], {
+            }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, 'options', [bindable], {
                 enumerable: true,
                 initializer: null
-            }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, 'view', [bindable], {
+            }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, 'view', [bindable], {
                 enumerable: true,
                 initializer: null
             })), _class2)) || _class) || _class) || _class));
@@ -177,4 +199,4 @@ System.register(['aurelia-framework', 'jquery', 'moment', 'fullcalendar'], funct
         }
     };
 });
-//# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNjaGVkdWxlL2NhbGVuZGFyLmpzIl0sIm5hbWVzIjpbImluamVjdCIsIm5vVmlldyIsImJpbmRhYmxlIiwiYmluZGluZ01vZGUiLCJjdXN0b21FbGVtZW50IiwiQmluZGluZ0VuZ2luZSIsImlubGluZVZpZXciLCIkIiwibW9tZW50IiwiZnVsbENhbGVuZGFyIiwiY2FsZW5kYXIiLCJFbGVtZW50IiwiZWxlbWVudCIsImJpbmRpbmdFbmdpbmUiLCJzdWJzY3JpcHRpb24iLCJjb2xsZWN0aW9uT2JzZXJ2ZXIiLCJldmVudHMiLCJzdWJzY3JpYmUiLCJzcGxpY2VzIiwiZXZlbnRMaXN0Q2hhbmdlZCIsImNvbnNvbGUiLCJsb2ciLCJkYXlDbGljayIsImRhdGUiLCJqc0V2ZW50IiwidmlldyIsInNlc3Npb25TdG9yYWdlIiwic2V0SXRlbSIsImV2ZW50c0NoYW5nZWQiLCJuZXdWYWx1ZSIsImRpc3Bvc2UiLCJhdHRhY2hlZCIsImV2ZW50U291cmNlIiwic3RhcnQiLCJlbmQiLCJ0aW1lem9uZSIsImNhbGxiYWNrIiwiZGVmYXVsdFZhbHVlcyIsImRlZmF1bHRWaWV3IiwiYWxsRGF5U2xvdCIsIndlZWtlbmRzIiwiZmlyc3REYXkiLCJldmVudENsaWNrIiwiZXZlbnQiLCJPYmplY3QiLCJhc3NpZ24iLCJvcHRpb25zIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQ0VBLGtCLHFCQUFBQSxNO0FBQVFDLGtCLHFCQUFBQSxNO0FBQVFDLG9CLHFCQUFBQSxRO0FBQVVDLHVCLHFCQUFBQSxXO0FBQzFCQyx5QixxQkFBQUEsYTtBQUFlQyx5QixxQkFBQUEsYTtBQUFlQyxzQixxQkFBQUEsVTs7QUFHekJDLGE7O0FBQ0FDLGtCOztBQUNDQyx3QixpQkFBQUEsWTs7O2dDQUtLQyxRLFdBSFpOLGNBQWMsVUFBZCxDLFVBQ0FFLFdBQVcsb0ZBQVgsQyxVQUNBTixPQUFPVyxPQUFQLEVB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
+//# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNjaGVkdWxlL2NhbGVuZGFyLmpzIl0sIm5hbWVzIjpbImluamVjdCIsIm5vVmlldyIsImJpbmRhYmxlIiwiYmluZGluZ01vZGUiLCJjdXN0b21FbGVtZW50IiwiQmluZGluZ0VuZ2luZSIsImlubGluZVZpZXciLCIkIiwibW9tZW50IiwiZnVsbENhbGVuZGFyIiwiY2FsZW5kYXIiLCJFbGVtZW50IiwiZWxlbWVudCIsImJpbmRpbmdFbmdpbmUiLCJzdWJzY3JpcHRpb24iLCJjb2xsZWN0aW9uT2JzZXJ2ZXIiLCJldmVudHMiLCJzdWJzY3JpYmUiLCJzcGxpY2VzIiwiZXZlbnRMaXN0Q2hhbmdlZCIsImNvbnNvbGUiLCJsb2ciLCJkYXlDbGljayIsImRhdGUiLCJqc0V2ZW50IiwidmlldyIsInNlc3Npb25TdG9yYWdlIiwic2V0SXRlbSIsImV2ZW50c0NoYW5nZWQiLCJuZXdWYWx1ZSIsImRpc3Bvc2UiLCJpc1Bhc3QiLCJ0b2RheSIsImZvcm1hdCIsImlzQWZ0ZXIiLCJhdHRhY2hlZCIsImRlZmF1bHRPcHRpb25zIiwiZGVmYXVsdFZpZXciLCJoZWFkZXIiLCJsZWZ0IiwiY2VudGVyIiwicmlnaHQiLCJ0aGVtZSIsImFsbERheVNsb3QiLCJ3ZWVrZW5kcyIsImZpcnN0RGF5IiwiZXZlbnRDbGljayIsImV2ZW50Iiwic3RhcnQiLCJlbmQiLCJ0aW1lem9uZSIsImNhbGxiYWNrIiwiZGF0YSIsIm1hcCIsImVkaXRhYmxlIiwiaGFuZGxlV2luZG93UmVzaXplIiwibWluVGltZSIsIm1heFRpbWUiLCJjb2x1bW5Gb3JtYXQiLCJ3ZWVrIiwiZGlzcGxheUV2ZW50VGltZSIsImFsbERheVRleHQiLCJPYmplY3QiLCJhc3NpZ24iLCJvcHRpb25zIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQ0VBLGtCLHFCQUFBQSxNO0FBQVFDLGtCLHFCQUFBQSxNO0FBQVFDLG9CLHFCQUFB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
