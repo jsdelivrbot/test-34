@@ -1,18 +1,11 @@
 ﻿<template>
-    
-    <modal showing.bind="true"><h1>Some Heading</h1><p>My custom content in here</p></modal>
-   
      <section>
         <require from='nav-bar'></require>
-        <require from="schedule/calendar"></require>
-       
+        <!--<require from="schedule/calendar"></require>-->       
         <nav-bar router.bind="router"></nav-bar>
-
 
         <div if.bind="isAuthenticated">
 
-
-          
             <!-- Main -->
             <section id="main" class="wrapper sidebar left" style="margin-top:18px;">
 
@@ -122,20 +115,10 @@
                         <button if.bind="eventView" class="button special" click.delegate="closeEvent()"><i class="fa fa-arrow-left"></i>&nbsp;Back to Calendar</button>
 
                         <!-- calendar -->
-                        <calendar show.bind="calendarView && !eventView" id="golf-calendar" style="cursor:pointer;" events.bind="events" view.bind="view" weekends.bind="true" day-click.bind="dayClick" event-click.bind="eventClicked" options.bind="options"></calendar>
-                       
-                       
-                         <!-- modal -->
-                        <dialog ref.view-model="match-modal">
+                        <div id="golf-calendar" style="cursor:pointer;" events.bind="events" view.bind="view" day-click.bind="dayClick"  event-click.bind="eventClick" options.bind="options"></div>
 
-                        </dialog>
-                        <!--<dialog ref.view-model="match-modal">
-                            <title>Title</title>
-                            <article>Body content</article>
-                            <footer>Footer</footer>
-                        </dialog>-->
-                        <a class="btn btn-default au-target" click.delegate="openDialog('schedule/match-modal')">Demo</a>
-                       
+                        <!--<calendar id="golf-calendar" style="cursor:pointer;" events.bind="events" view.bind="view" event-click.bind="eventClick" day-click.bind="dayClick" options.bind="options"></calendar>-->
+
                     </div>
 
                     <!-- Sidebar -->

@@ -9,6 +9,7 @@ import {AuthService} from 'aurelia-authentication';
 import * as authConfig from 'authConfig';
 import * as log from 'toastr';
 import $ from 'jquery';
+import moment from 'moment';
 
 @inject(Session, AuthService, Router, FetchConfig, AppRouterConfig, ManageUserService)
 export class App {

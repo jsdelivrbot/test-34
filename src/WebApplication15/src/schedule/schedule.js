@@ -13,8 +13,11 @@ import _ from 'underscore';
 import moment from 'moment';
 //import 'aurelia/animator-velocity';
 import 'fullcalendar/dist/fullcalendar.css!';
-import 'bootstrap';
+//import 'bootstrap';
 import skeljs from 'skeljs'; import 'utiljs'; import 'mainSkeljs';
+import {fullCalendar} from 'fullcalendar';
+//import "bootstrap/css/bootstrap.css!";
+import {MatchModal} from './match-modal';
 
 @inject(AuthService, ManageUserService, Router, Session, EventAggregator, DialogService, GolfMatchDataService, Validation)
 export class Schedule {
@@ -30,6 +33,8 @@ export class Schedule {
     calendarView = true;
     listView = false;
     eventView = false;
+    schedule = {};
+   
 
     constructor(auth, manage, router, session, eventAggregator, dialogService, golfMatchDataService, validation) {
         this.auth = auth;
@@ -38,7 +43,7 @@ export class Schedule {
         this.session = session;
         this.ea = eventAggregator;
         this.dialogService = dialogService;
-        this.golfMatchDataService = golfMatchDataService;
+        this.golfMatchDataService = golfMatchDataService;      
         this.today = moment().format("dddd MMM DD");
         this.upcomingScheduledMatchesCount = 0;
         this.selectedView = "all";
@@ -50,80 +55,99 @@ export class Schedule {
         .ensure('startDate')
               .isNotEmpty();
     }
-    openDialog(viewModel, calEvent){
-        this.dialogService.open({viewModel: viewModel, model: calEvent}).then(response => {
-            if(!response.wasCancelled) {
-                console.log('OK');
-                this.rating = response.output;
+   
+    attached(){ 
+      
+        $("#upcoming-matches-header").velocity('slideDownIn');       
+        $("#golf-calendar").velocity('slideDownIn');       
+
+        this.getGolfMatches().then(()=> {
+            this.configureCalendar();  
+            
+           
+        });   
+        
+        
+    }
+
+    activate(){
+        let self = this;
+        this.currentUser = this.session.getCurrentUser();      
+       
+        this.showUndo = false;
+        // this.clearSessionStorage();
+       
+    } 
+    /* Calendar */   
+    //eventClicked(calEvent, jsEvent, view){
+    //    console.log(calEvent);
+       
+    //    // find the scheduled match that matches this event and show it
+    //    this.options[0].context.eventView = true;
+
+    //    //  create new eventView object
+    //    this.options[0].context.scheduleDataService.getScheduleById(calEvent.id).then((schedule) => {
+    //        this.options[0].context.selectedMatch = schedule;
+    //    });
+    //}
+    eventClick(event){  
+        
+        console.log(event);
+ 
+        
+        // Aurelia dialog
+        this.dialogService.open({ viewModel: MatchModal, model: event}).then(response => {
+
+         
+            if (!response.wasCancelled) {
+                console.log('good - ', response.output);
             } else {
-                console.log('Cancel');
+                console.log('bad');
             }
             console.log(response.output);
+
+           
+
+
+            //if (!response.wasCancelled) {
+                
+            //    let newPlayer = response.output;
+            //    console.log(newPlayer);
+            //    //schedule.Players.push({ UserName: newPlayer[0].DisplayName, Handicap: newPlayer[0].Handicap,  UserId: newPlayer[0].UserId, JoinedByThemselves: false});
+
+            //    //return this.scheduleDataService.editSchedule(schedule.ScheduleId, schedule).then(()=>{
+            //    //    log.success(newPlayer[0].DisplayName + ' is now in the match!');
+            //    //    this.setSelectedView();
+
+            //    //    setTimeout(()=>{
+                      
+            //    //        $(".small-user").velocity('callout.pulse');
+                       
+                       
+            //    //    },1000);
+                    
+            //    //}).then(()=>{
+            //    //    if(this.eventView){
+                       
+            //    //        this.scheduleDataService.getScheduleById(schedule.ScheduleId).then((schedule) => {
+            //    //            this.selectedMatch = schedule;
+            //    //        });
+            //    //    }
+            //    //});
+               
+            //}            
         });
+
+      
+      
     }
-
-    /* Calendar */   
-
-    // clicking on an Event.
-    eventClicked(vm, calEvent, jsEvent, view){
-        console.log(calEvent);
-        vm.openDialog("schedule/match-modal", model: calEvent);
-       // this.dialogService.open({viewModel: "schedule/match-modal", model: this})
-        //$( '#add-edit-event-modal' ).modal( 'show' ).then(response => {
-        //    if(!response.wasCancelled) {
-        //        console.log('OK');
-        //        this.rating = response.output;
-        //    } else {
-        //        console.log('Cancel');
-        //    }
-        //    console.log(response.output);
-        //});
-       
-        // find the scheduled match that matches this event and show it
-        //this.options[0].context.eventView = true;
-        //this.dialogService.open({ viewModel: this, model: this.calEvent}).then(response => {
-        //    if (!response.wasCancelled) {
-        //        console.log('good - ', response.output);
-        //    } else {
-        //        console.log('bad');
-        //    }
-        //    console.log(response.output);
-        //});
-        ////  create new eventView object
-        //this.options[0].context.scheduleDataService.getScheduleById(calEvent.id).then((schedule) => {
-        //    this.options[0].context.selectedMatch = schedule;
-        //});
-    }
-    closeEvent(){
-        this.eventView = false;
-        this.calendarView = true;
-    }
-    // event: clicked the calendar icon
-    //showCalendarView(){
-    //    this.calendarView = true;
-    //    this.listView = false;
-    //   // this.clearSessionStorage();
-
-    //    this.getSchedules().then(()=> {
-    //        this.configureCalendar();
-    //    });
-
-    //}
-
-    // event: clicked the list icon
-    //showListView(){
-    //    this.listView = true;
-    //    this.calendarView = false;  
-    //    this.eventView = false;
-    //   // this.clearSessionStorage();
-    //}
 
     // clicking on an empty Day, show create new match.
-    dayClick(date, jsEvent, view){
+    dayClick(options, date, jsEvent, view){
 
         console.log(date);       
         console.log(view);    
-
+        options.options[0].context.toggleCreateMode(startDate, time); 
         var check = date._d.toJSON().slice(0,10);      
    
       
@@ -140,15 +164,12 @@ export class Schedule {
             var startDate = date.format("MM/DD/YYYY");       
             this.options[0].context.toggleCreateMode(startDate, time);   
         }
-    } 
-    
-    isPast(date) { 
-        let today = moment().format();
-        return moment( today ).isAfter( date );
-    }
-
+    }     
+ 
     /* setup the calendar */
     configureCalendar(schedule){
+
+        // get events for calendar.
         this.events = [];
         this.events.push({
             title: 'This is a Material Design event!',
@@ -156,9 +177,22 @@ export class Schedule {
             end: '10-19-2016',
             color: '#C2185B',
             guests: 50
-        });
-      
-        // load up events
+        });     
+        this.events.push({
+            title: 'happy birthday!',
+            start: '10-19-2016',
+            end: '10-19-2016',
+            color: '#C2185B',
+            guests: 50
+        });    
+
+        this.events.push({
+            title: 'happy birthdayve!',
+            start: '10-19-2016',
+            end: '10-19-2016',
+            color: '#C2d85B',
+            guests: 50
+        });  
         if(this.schedules){
             for (var i = 0; i < this.schedules.length; i++) {           
                 
@@ -198,27 +232,56 @@ export class Schedule {
         }
         let self = this;
 
-        // options
-        this.options = [{ 
+        // create calendar with options.
+        $("#golf-calendar").fullCalendar({
+
             context: self, // the context for the calendar will be this Schedule class. This is used to toggle events in this viewmodel.
            
-            //view: "week",
-            //eventLimit: true, 
-            //theme: true, // jQuery UI themeing
-            //handleWindowResize: true,
-            //displayEventTime: true,  
-            //prev: 'circle-triangle-w',
-            //next: 'circle-triangle-e',
-            //prevYear: 'seek-prev',
-            //nextYear: 'seek-next',            
-            //header: {
-            //    left: 'prev',
-            //    right: 'month,agendaDay'
-            //},
-            dayClick: (date, jsEvent, view) => this.dayClick(date, jsEvent, view),
-            eventClicked: (vm, calEvent, jsEvent, view) => this.eventClicked(self, vm, calEvent, jsEvent, view)
-            //eventMouseover:function(calEvent){
-            //    $(this).popover({
+            defaultView: this.view || 'agendaWeek',
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek'
+            },
+            theme: false,
+            allDaySlot: false,
+            weekends: true,
+            firstDay: 1,
+            dayClick: (date, jsEvent, view) => self.dayClick(date, jsEvent, view),
+           
+            events: (start, end, timezone, callback) => {
+
+                let data = self.events.map( (event) => {
+                    event.editable = !self.isPast( event.start );
+                    console.log(event);
+                    return event;
+
+                });
+                if(data){
+                   
+                    console.log(callback);
+                  
+                    callback(self.events);
+                }
+           
+            },
+            eventClick: ( event ) => self.eventClick( event ),
+               
+            editable: true,
+            handleWindowResize: true,           
+           
+            minTime: '07:30:00', // Start time for the calendar
+            maxTime: '15:00:00', // End time for the calendar
+            columnFormat: {
+                week: 'ddd' // Only show day of the week names
+            },
+            displayEventTime: false,
+            allDayText: 'Online/TBD',          
+             
+                
+          
+            //eventMouseover: (calEvent) => {
+            //    $(calEvent).popover({
             //        title: event.name,
             //        placement: 'right',
             //        trigger: 'manual',
@@ -227,32 +290,20 @@ export class Schedule {
             //    }).popover('toggle');
             //}
             
-           
-        }];
+               
+        });
+
+
        
-    }
-
-    attached(){ 
-      
-        $("#upcoming-matches-header").velocity('transition.slideDownIn');       
-        $("#golf-calendar").velocity('transition.slideDownIn');       
-
-        this.getGolfMatches().then(()=> {
-            this.configureCalendar();
-            console.log(this.events);
-        });   
         
        
+       
     }
-
-    activate(){
-        let self = this;
-        this.currentUser = this.session.getCurrentUser();      
-       
-        this.showUndo = false;
-       // this.clearSessionStorage();
-       
-    } 
+    isPast(date) { 
+        let today = moment().format();
+        return moment( today ).isAfter( date );
+    }
+    
     getGolfMatches() {
         return this.golfMatchDataService.golfmatches
                .then(golfmatches => this.golfmatches = _.sortBy(golfmatches, "GolfMatchId"));   
