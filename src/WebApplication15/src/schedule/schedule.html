@@ -1,7 +1,6 @@
 ﻿<template>
      <section>
-        <require from='nav-bar'></require>
-        <!--<require from="schedule/calendar"></require>-->       
+        <require from='nav-bar'></require>          
         <nav-bar router.bind="router"></nav-bar>
 
         <div if.bind="isAuthenticated">
@@ -12,125 +11,22 @@
                 <div class="inner">
 
                     <!-- Content -->
-                    <div class="content au-animate">
-
-                        <!-- Event View -->
-                        <section id="eventWrapper" if.bind="eventView" class="12u(xsmall) 12u(small) 8u one-edge-shadow" class.bind="eventView ? 'eventWrapper' : ''">
-
-                            <div class="list-container schedule">
-                                <section class="list-item">
-                                    <!-- Date and Time -->
-                                    <span class="list-month">
-                                        ${s.ScheduleDateIso | dateFormat: 'dddd MMM D'}
-                                    </span>
-                                    <br />
-                                    <span class="list-time">
-                                        @ ${s.ScheduleDateIso | dateFormat: 'h:mm A'}
-                                    </span>
-
-                                </section>
-                                <section class="list-item">
-                                    <strong>${selectedMatch.NumberOfHoles}</strong> holes
-                                </section>
-
-                                <!-- Actions -->
-                                <section class="list-item-end">
-                                    <!-- invite -->
-                                    <a if.bind="isCurrentUserMatchCreator(selectedMatch.UserName) && !isUserInThisSlot(selectedMatch.Players[p].DisplayName) && selectedMatch.Players.length < selectedMatch.NumberOfPlayers" click.delegate="addPlayerToMatch(selectedMatch)">
-                                        <i style="font-size:1.4em;" class="fa fa-envelope"></i>
-                                    </a>
-                                    <!-- edit -->
-                                    <a if.bind="isCurrentUserMatchCreator(selectedMatch.UserName)" click.delegate="rescheduleMatch(selectedMatch)">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                    <!-- cancel -->
-                                    <a if.bind="isCurrentUserMatchCreator(selectedMatch.UserName)" click.delegate="cancelMatch(selectedMatch)">
-                                        <i class="fa fa-remove"></i>
-                                    </a>
-
-                                </section>
-                            </div>
-
-                            <div if.bind="selectedMatch.Comments" class="schedule session-date"><i class="fa fa-comment-o"></i><em>&nbsp;${selectedMatch.Comments}</em></div>
-                            <!-- Players -->
-                            <div class="list-container schedule">
-                                <div class="flexcontainer schedule">
-
-                                    <div class="invited-players">
-                                        <h4 style="display:inline;">
-                                            Players   &nbsp;&nbsp;<a style="color:blue;font-size:.8em;" href="#" if.bind="isCurrentUserMatchCreator(selectedMatch.UserName) && !isUserInThisSlot(selectedMatch.Players[p].DisplayName) && selectedMatch.Players.length < selectedMatch.NumberOfPlayers" click.delegate="joinMatch(selectedMatch)">
-                                                Join!
-                                            </a>
-                                            <!--<i style="font-size:1.2em;" class="fa fa-plus-circle" click.delegate="addPlayerToMatch(selectedMatch)"></i>-->
-                                        </h4>
-                                        <!--<br/>
-                                        <a href="#" if.bind="isCurrentUserMatchCreator(s.UserName) && !isUserInThisSlot(s.Players[p].DisplayName) && s.Players.length < s.NumberOfPlayers" click.delegate="joinMatch(s)">
-                                            Join!
-                                        </a>-->
-                                        <div repeat.for="p of selectedMatch.NumberOfPlayers">
-                                            <div class="player-image-container" if.bind="selectedMatch.Players[p].DisplayName">
-
-                                                <div class="player-image">
-                                                    <img src.bind="selectedMatch.Players[p].ImageBytes" class="extra-small-user glow" />
-                                                </div>
-                                                <div class="player-name" title="HCP: ${selectedMatch.Players[p].Handicap}">
-                                                    ${selectedMatch.Players[p].DisplayName}
-                                                    <!--<br/>
-                                                    <span>HCP: ${selectedMatch.Players[p].Handicap}</span>-->
-                                                    <!--<br/>
-                                                    <a href="#"
-                                                       click.delegate="removePlayerFromMatch(selectedMatch, selectedMatch.Players[p].DisplayName)">
-                                                        remove
-                                                    </a>-->
-
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="waitinglist">
-                                        <h4 style="display:inline;">Waiting List <i style="font-size:1.2em;" class="fa fa-plus-circle"></i></h4>
-                                        <!--<br/>
-                                        <a href="#" if.bind="isCurrentUserMatchCreator(s.UserName) && !isUserInThisSlot(s.Players[p].DisplayName) && s.Players.length < s.NumberOfPlayers" click.delegate="joinMatch(s)">
-                                           Add me to waiting list
-                                        </a>-->
-                                        <div repeat.for="p of selectedMatch.NumberOfPlayers">
-                                            <div style="font-size:.9em;" class="player-image-container">
-                                                <span class="badge text-info">${$index + 1}.</span>
-
-                                                <div class="player-name">
-                                                    &nbsp;${selectedMatch.Players[p].DisplayName}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </section>
-                        <br />
-                        <button if.bind="eventView" class="button special" click.delegate="closeEvent()"><i class="fa fa-arrow-left"></i>&nbsp;Back to Calendar</button>
-
+                    <div class="content au-animate">                       
+                        
+                        <h2 style="color:#48692A"> Schedule</h2>
                         <!-- calendar -->
-                        <div id="golf-calendar" style="cursor:pointer;" events.bind="events" view.bind="view" day-click.bind="dayClick"  event-click.bind="eventClick" options.bind="options"></div>
-
-                        <!--<calendar id="golf-calendar" style="cursor:pointer;" events.bind="events" view.bind="view" event-click.bind="eventClick" day-click.bind="dayClick" options.bind="options"></calendar>-->
+                        <div id="golf-calendar" style="cursor:pointer;background-color:#fff" events.bind="events" view.bind="view" day-click.bind="dayClick" event-click.bind="eventClick" options.bind="options"></div>
 
                     </div>
-
+                 
                     <!-- Sidebar -->
-                    <div class="sidebar style4 12u$(xsmall) au-animate" if.bind="!eventView">
-                        <!-- calendar -->
-                        <!--<calendar if.bind="calendarView && eventView" id="calendar" style="cursor:pointer;" events.bind="events" view.bind="view" weekends.bind="true" day-click.bind="dayClick" event-click.bind="eventClicked" options.bind="options"></calendar>-->
-
+                    <div class="sidebar 12u$(xsmall) au-animate">
+                       
                         <section>
 
                             <header>
-                                <h2 style="color:#48692A"> Schedule</h2>
-                                <!--<h2 class="sidebar-day-text color-2">${today}</h2>-->
+                               
+                                <h2 class="sidebar-day-text color-2">${today}</h2>
                                 <h5>${currentUser.displayName}</h5>
                                 <p>@${currentUser.userName}</p>
                                 <div class="row">
@@ -147,12 +43,12 @@
                                             <li title="Handicap">
                                                 HCP: <b>${currentUser.handicap}</b>
                                             </li>
-                                            <!--<li>
+                                            <li>
                                                 <i style="color:gold;" class="fa fa-circle"></i> &nbsp;<i style="color:saddlebrown;" class="fa fa-circle"></i>
-                                            </li>-->
-                                            <!--<li>
+                                            </li>
+                                            <li>
                                                 <i class="fa fa-heart alt-color-text"></i> x 3
-                                            </li>-->
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>

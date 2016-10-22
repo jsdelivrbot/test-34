@@ -26,8 +26,7 @@ export function configure(aurelia) {
 
     let converterPath = 'resources/converters/';
     aurelia.use.globalResources( 
-       'schedule/match-modal',
-       
+       'schedule/match-modal',       
         converterPath + 'json',
         converterPath + 'upper',
         converterPath + 'lower',
