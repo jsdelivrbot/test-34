@@ -24,6 +24,7 @@
 	input[type="text"],
 	input[type="password"],
 	input[type="email"],
+    input[type="time"], input[type="date"],
 	select,
 	textarea {
 		@include vendor('appearance', 'none');
@@ -68,6 +69,7 @@
 	input[type="text"],
 	input[type="password"],
 	input[type="email"],
+   
 	select {
 		height: _size(element-height);
 	}
@@ -162,13 +164,13 @@
 		}
 
 		input[type="text"],
-        input[type="date"],
+        
 		input[type="password"],
 		input[type="email"],
 		select,
 		textarea {
-			background: _palette($p, border-bg);
-			border-color: _palette($p, border);
+			/*background: _palette($p, border-bg);*/
+			/*border-color: _palette($p, border);*/
 
 			&:focus {
 				@if $p == $highlight {

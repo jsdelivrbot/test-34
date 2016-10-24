@@ -56,10 +56,11 @@ System.config({
     "components/jquery": "github:components/jquery@2.2.4",
     "core-js": "npm:core-js@1.2.7",
     "css": "github:systemjs/plugin-css@0.1.31",
+    "eonasdan-bootstrap-datetimepicker": "npm:eonasdan-bootstrap-datetimepicker@4.17.43",
     "fetch": "github:github/fetch@1.0.0",
     "filesaver.js": "npm:filesaver.js@0.2.0",
     "font-awesome": "npm:font-awesome@4.6.3",
-    "fullcalendar": "npm:fullcalendar@2.9.1",
+    "fullcalendar": "npm:fullcalendar@3.0.1",
     "gulp-sass": "npm:gulp-sass@2.3.2",
     "http-proxy-middleware": "npm:http-proxy-middleware@0.17.2",
     "intro.js": "npm:intro.js@2.3.0",
@@ -446,6 +447,11 @@ System.config({
       "hoek": "npm:hoek@2.16.3",
       "http": "github:jspm/nodelibs-http@1.7.1"
     },
+    "npm:bootstrap@3.3.7": {
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
     "npm:brace-expansion@1.1.6": {
       "balanced-match": "npm:balanced-match@0.4.2",
       "concat-map": "npm:concat-map@0.0.1"
@@ -706,6 +712,12 @@ System.config({
       "inherits": "npm:inherits@2.0.1",
       "systemjs-json": "github:systemjs/plugin-json@0.1.2"
     },
+    "npm:eonasdan-bootstrap-datetimepicker@4.17.43": {
+      "bootstrap": "npm:bootstrap@3.3.7",
+      "jquery": "npm:jquery@2.2.4",
+      "moment": "npm:moment@2.15.1",
+      "moment-timezone": "npm:moment-timezone@0.4.1"
+    },
     "npm:error-ex@1.3.0": {
       "is-arrayish": "npm:is-arrayish@0.2.1",
       "util": "github:jspm/nodelibs-util@0.1.0"
@@ -802,7 +814,7 @@ System.config({
       "rimraf": "npm:rimraf@2.5.4",
       "stream": "github:jspm/nodelibs-stream@0.1.0"
     },
-    "npm:fullcalendar@2.9.1": {
+    "npm:fullcalendar@3.0.1": {
       "jquery": "npm:jquery@2.2.4",
       "moment": "npm:moment@2.15.1",
       "process": "github:jspm/nodelibs-process@0.1.2"
@@ -1223,6 +1235,10 @@ System.config({
       "minimist": "npm:minimist@0.0.8",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:moment-timezone@0.4.1": {
+      "moment": "npm:moment@2.6.0",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.2"
     },
     "npm:multipipe@0.1.2": {
       "duplexer2": "npm:duplexer2@0.0.2",

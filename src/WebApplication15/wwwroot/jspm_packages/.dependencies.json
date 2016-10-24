@@ -1735,11 +1735,6 @@
     "process": "github:jspm/nodelibs-process@^0.1.0"
   },
   "npm:lodash@4.16.4": {},
-  "npm:fullcalendar@2.9.1": {
-    "jquery": "npm:jquery",
-    "moment": "npm:moment",
-    "process": "github:jspm/nodelibs-process@^0.1.0"
-  },
   "npm:moment@2.15.1": {},
   "github:vheissu/aurelia-modal@1.0.0": {},
   "npm:aurelia-metadata@1.0.2": {
@@ -1814,5 +1809,26 @@
     "aurelia-templating-resources": "npm:aurelia-templating-resources@^1.0.0",
     "extend": "npm:extend@^3.0.0",
     "jwt-decode": "npm:jwt-decode@^2.0.0"
+  },
+  "npm:moment-timezone@0.4.1": {
+    "moment": "npm:moment@~2.6.0",
+    "systemjs-json": "github:systemjs/plugin-json@^0.1.0"
+  },
+  "npm:moment@2.6.0": {},
+  "npm:bootstrap@3.3.7": {
+    "fs": "github:jspm/nodelibs-fs@^0.1.0",
+    "path": "github:jspm/nodelibs-path@^0.1.0",
+    "process": "github:jspm/nodelibs-process@^0.1.0"
+  },
+  "npm:eonasdan-bootstrap-datetimepicker@4.17.43": {
+    "bootstrap": "npm:bootstrap@^3.3",
+    "jquery": "npm:jquery@^2.0.0",
+    "moment": "npm:moment@^2.10",
+    "moment-timezone": "npm:moment-timezone@^0.4.0"
+  },
+  "npm:fullcalendar@3.0.1": {
+    "jquery": "npm:jquery",
+    "moment": "npm:moment",
+    "process": "github:jspm/nodelibs-process@^0.1.0"
   }
 }

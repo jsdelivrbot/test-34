@@ -1,16 +1,99 @@
 <template>
+    
     <ai-dialog>
+        <ai-dialog-header style="border-bottom: 1px solid #5f9dd2;padding-bottom:0;">
+            <div class="row">
+                <div class="4u">
+                    
+                    <img if.bind="mode === 'create'" height="65" src="styles/images/gc.png" />
+                    <img if.bind="mode !== 'create'" class="small-user"
+                         src="../../styles/images/user-placeholder.jpg" />
+                   
+                </div>                
+                <div class="4u">
+                    <h3 class="modal-title">
+                        <span id="add-edit-event">
+                            <span if.bind="mode ==='create'">
+                                ${mode} Match
+                            </span>
+                            <span if.bind="mode !=='create'">
+                                Dan's match
+                            </span>
+                           
+                        </span>  
+                    </h3>
+                </div>
+                <div class="4u">
+                    <!-- other info here? -->
+                    
+                </div>
+                </div>
+</ai-dialog-header>
         <ai-dialog-body>
-            <header>
-                <h3>Update your match</h3>
-            </header>
-            <h2>Edit first name</h2>
-            ${event.title}
+           
+
+            <div class="row">
+
+                <div class="12u(small) input-group date" style="padding-top:5px;">
+                    <label for="start" style="margin:0">Start Date</label>
+                    <input type="date" class="form-control" name="start" value.bind="start" style="font-size:20px;">
+                   
+                </div>
+
+                <div class="6u(small) date input-group" id='timepicker' style="padding-top:5px;">
+                    <label for="time" style="margin:0">@ Time</label>
+                    <input type='time' class="form-control" name="time" value.bind="match.time" />
+
+                </div>
+                <div class="6u(small)" style="padding-top:5px;">
+                    <label for="holes" style="margin:0">Number of Holes</label>
+                    <select name="holes" value.bind="match.numberOfHoles" style="height:1.9em">
+                        <option value="9">
+                            9
+                        </option>
+                        <option selected="selected" value="18">
+                            18
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" style="padding-top:5px;">
+                <label for="title" style="margin:0">Comments</label>
+                <input attach-focus="true" type="text" name="title" class="form-control" value.bind="match.title">
+
+            </div>
+            <hr style="margin:1em;"/>
+            <div class="row">
+                <div class="12u"> ${ match.players |json }
+                    <label for="players" style="margin:0">Players</label>
+                    <div name="players" repeat.for="player of match.players">
+
+                       
+                          ${player} <i class="fa fa-check" style="color:green"></i>
+                        <i if.bind="player.IsMatchCreator" class="fa fa-star"></i>
+
+                    </div>
+                </div>
+                <div class="12u">
+                    <label for="players" style="margin:0">Queue</label>
+                    <div name="players" repeat.for="player of match.players">
+
+
+                       (${$index+1}) ${player}
+
+
+                    </div>
+                </div>
+            </div>
         </ai-dialog-body>
 
         <ai-dialog-footer>
-            <button click.trigger="cancel()">Cancel</button>
-            <button click.trigger="ok(event)">Ok</button>
+            <!--<button style="line-height:1" click.trigger="cancel()">Cancel</button>-->
+            <!--<button if.bind="" class="style1" style="line-height:1" click.trigger="cancelMatch(match)">Ok</button>-->
+           
+             <!--isCurrentUserCreator-->
+            <button class="style1" style="line-height:1" click.trigger="ok(match)">Ok</button>
         </ai-dialog-footer>
     </ai-dialog>
 </template>

@@ -14,6 +14,7 @@
                     <div class="content au-animate">                       
                         
                         <h2 style="color:#48692A"> Schedule</h2>
+                        
                         <!-- calendar -->
                         <div id="golf-calendar" style="cursor:pointer;background-color:#fff" events.bind="events" view.bind="view" day-click.bind="dayClick" event-click.bind="eventClick" options.bind="options"></div>
 
@@ -44,7 +45,7 @@
                                                 HCP: <b>${currentUser.handicap}</b>
                                             </li>
                                             <li>
-                                                <i style="color:gold;" class="fa fa-circle"></i> &nbsp;<i style="color:saddlebrown;" class="fa fa-circle"></i>
+                                                <i style="color:#C2b85B;" class="fa fa-circle"></i> &nbsp;<i style="color:#C2185B;" class="fa fa-circle"></i>
                                             </li>
                                             <li>
                                                 <i class="fa fa-heart alt-color-text"></i> x 3
@@ -53,57 +54,11 @@
                                     </div>
                                 </div>
                             </header>
-
-                            <br />
-                            <!--<h3>CLUB</h3>
-                            <div class="select-wrapper">
-                                <select name="club-category" id="club-category">
-                                    <option value="currentUser.club">${currentUser.club}</option>
-                                </select>
-                            </div>
-                            <br />-->
-
                         </section>
-                        <br />
-                        <!--<h3 if.bind="listView">VIEW</h3>
-
-                        <footer if.bind="listView">
-                            <div class="select-wrapper">
-                                <select value.bind="selectedView" change.delegate="setSelectedView()">
-                                    <option value="my upcoming" selected="selected">My Upcoming Matches</option>
-                                    <option value="joinable">Joinable Matches</option>
-
-                                    <option value="all">All</option>
-                                </select>
-                            </div>
-
-                        </footer>-->
-                        <!--<section>
-                            <br />
-                            <h3><i style="color:#e286a9;" class="fa fa-list"></i>&nbsp;VIEW</h3>
-
-                            <footer>
-                                <div class="select-wrapper">
-                                    <select value.bind="selectedView" change.delegate="setSelectedView()">
-                                        <option value="my upcoming" selected="selected">My Upcoming Matches</option>
-                                        <option value="joinable">Joinable Matches</option>
-
-                                        <option value="all">All</option>
-                                    </select>
-                                </div>
-
-                            </footer>
-                        </section>-->
-
                     </div>
 
                 </div>
             </section>
-
-
-
-
-
         </div>
 
     </section>  <!-- Footer -->

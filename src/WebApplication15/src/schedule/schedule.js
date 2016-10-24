@@ -52,20 +52,20 @@ export class Schedule {
       
         // schedule validation              
         this.scheduleValidation =  validation.on(this)
-        .ensure('startDate')
+        .ensure('start')
               .isNotEmpty();
     }
    
     attached(){ 
       
-        $("#upcoming-matches-header").velocity('slideDownIn');       
-        $("#golf-calendar").velocity('slideDownIn');       
-
-        this.getGolfMatches().then(()=> {
-            this.configureCalendar();  
             
+        $("body").removeClass("is-loading");
+        //this.getGolfMatches().then(()=> {
+            this.configureCalendar();  
+            //$("#upcoming-matches-header").velocity('slideDownIn');       
+            //$("#golf-calendar").velocity('slideDownIn'); 
            
-        });   
+        //});   
         
         
     }
@@ -79,24 +79,19 @@ export class Schedule {
        
     } 
     /* Calendar */   
-    //eventClicked(calEvent, jsEvent, view){
-    //    console.log(calEvent);
-       
-    //    // find the scheduled match that matches this event and show it
-    //    this.options[0].context.eventView = true;
-
-    //    //  create new eventView object
-    //    this.options[0].context.scheduleDataService.getScheduleById(calEvent.id).then((schedule) => {
-    //        this.options[0].context.selectedMatch = schedule;
-    //    });
-    //}
+    
     eventClick(event){  
         
         console.log(event);
- 
+
+        let model = {
+            match: event,
+            mode: "view",
+            context: this
+        };
         
         // Aurelia dialog
-        this.dialogService.open({ viewModel: MatchModal, model: event}).then(response => {
+        this.dialogService.open({ viewModel: MatchModal, model: model}).then(response => {
 
          
             if (!response.wasCancelled) {
@@ -142,28 +137,34 @@ export class Schedule {
       
     }
 
-    // clicking on an empty Day, show create new match.
-    dayClick(options, date, jsEvent, view){
+    processMatch(match){
+        console.log('made it!');
+        console.log(match);
+    }
 
-        console.log(date);       
-        console.log(view);    
-        options.options[0].context.toggleCreateMode(startDate, time); 
-        var check = date._d.toJSON().slice(0,10);      
-   
-      
-        var time = view.type === "month" ? moment().hour(6).minute(0).format('h:mm A') : date.format('h:mm A'); // default to 6am if month view.
+    /*
+      Clicking on day (not an event) will show create new match dialog.
+    */    
+    dayClick(date, jsEvent, view){
+
+        jsEvent.start = date;
+        jsEvent.time = moment(date).format('HH:mm');
+        jsEvent.numberOfHoles = 9;
+
+        let currentView = $("#golf-calendar").fullCalendar( 'getView' );       
+        if(currentView.type === 'month'){
+            // display on calendar nicely, set time to current time.            
+            jsEvent.time = moment().format('HH:mm');
+        }
        
-        var today = new Date().toJSON().slice(0,10);
-
-        if(check < today)
-        {
-            // dont create match in the past.
-        }
-        else
-        {
-            var startDate = date.format("MM/DD/YYYY");       
-            this.options[0].context.toggleCreateMode(startDate, time);   
-        }
+        // prepare the model for the dialog.
+        var model = {
+            match: jsEvent,
+            mode: "create",           
+            context: this
+        };
+        
+        this.dialogService.openAndYieldController({ viewModel: MatchModal, model: model});
     }     
  
     /* setup the calendar */
@@ -171,77 +172,18 @@ export class Schedule {
 
         // get events for calendar.
         this.events = [];
-        this.events.push({
-            title: 'This is a Material Design event!',
-            start: '10-19-2016',
-            end: '10-19-2016',
-            color: '#C2185B',
-            guests: 50
-        });     
-        this.events.push({
-            title: 'happy birthday!',
-            start: '10-19-2016',
-            end: '10-19-2016',
-            color: '#C2185B',
-            guests: 50
-        });    
-
-        this.events.push({
-            title: 'happy birthdayve!',
-            start: '10-19-2016',
-            end: '10-19-2016',
-            color: '#C2d85B',
-            guests: 50
-        });  
-        if(this.schedules){
-            for (var i = 0; i < this.schedules.length; i++) {           
-                
-                let start =  this.schedules[i].ScheduleDateIso;
-                console.log(this.schedules[i].Players);
-
-                let foundPlayer = false;
-                for (var j = 0; j < this.schedules[i].Players.length; j++) {
-                    if(this.schedules[i].Players[j].DisplayName == this.currentUser.displayName ){
-                        foundPlayer = true;
-                    }
-                }
-
-                if(foundPlayer){
-                    this.events.push({  
-                        title: this.schedules[i].NumberOfHoles + " holes", 
-                        start: start, 
-                        allDay : false,
-                        color: 'black', 
-                        backgroundColor: '#48692A',  
-                        textColor: '#fff',
-                        id: this.schedules[i].ScheduleId
-                    });
-                }else{
-                    this.events.push({  
-                        title: this.schedules[i].NumberOfHoles + " holes",
-                        start: start, 
-                        allDay : false,
-                        color: 'grey', 
-                        backgroundColor: '#fff',   
-                        textColor: '#48692A',
-                        id: this.schedules[i].ScheduleId
-                    });
-                }
-                
-            }     
-        }
+        
         let self = this;
 
         // create calendar with options.
         $("#golf-calendar").fullCalendar({
 
             context: self, // the context for the calendar will be this Schedule class. This is used to toggle events in this viewmodel.
-           
-            defaultView: this.view || 'agendaWeek',
+            defaultView: 'month',
             header: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'month,agendaWeek'
+                right: 'month,agendaWeek,listMonth'
             },
             theme: false,
             allDaySlot: false,
@@ -251,46 +193,92 @@ export class Schedule {
            
             events: (start, end, timezone, callback) => {
 
-                let data = self.events.map( (event) => {
-                    event.editable = !self.isPast( event.start );
-                    console.log(event);
-                    return event;
+                this.events = [];
+                
+                this.golfMatchDataService.getGolfMatches(start, end)
+                            .then(golfmatches => self.golfmatches = _.sortBy(golfmatches, "GolfMatchId"))
+                            .then(() => {
+                               
+                                if(self.golfmatches){
 
-                });
-                if(data){
-                   
-                    console.log(callback);
-                  
-                    callback(self.events);
-                }
+                                    // make event objects out of golfmatches                                   
+                                    for (var i = 0; i < self.golfmatches.length; i++) {           
+                
+                                        let start =  moment(self.golfmatches[i].GolfMatchDateIso).format('MM-DD-YYYY');
+                                       
+                                        let isCurrentUserInMatch, isCurrentUserCreator = false;
+                                      
+                                        // check if current user is in this match and if so, if they're the creator.
+                                        for (var j = 0; j < self.golfmatches[i].Players.length; j++) {
+                                            if(self.golfmatches[i].Players[j].DisplayName == self.currentUser.displayName ){
+                                                isCurrentUserInMatch = true;
+
+                                                if(self.golfmatches[i].Players[j].IsMatchCreator){
+                                                    isCurrentUserCreator = true;
+                                                }
+                                            }
+                                        }
+
+                                        // set the match color.                                       
+                                        let backgroundColor = "#C2b85B";
+                                        if(!isCurrentUserInMatch)
+                                            backgroundColor = "#C2185B";
+
+                                        let formattedTime = moment(self.golfmatches[i].GolfMatchDateIso).format('LT');
+                                        this.events.push({  
+                                            title: formattedTime, 
+                                            start: start, 
+                                            time: self.golfmatches[i].Time,
+                                            allDay : false,    
+                                            textColor: "#fff",
+                                            backgroundColor: backgroundColor,
+                                            id: self.golfmatches[i].ScheduleId,
+                                            numberOfHoles: self.golfmatches[i].NumberOfHoles,
+                                            players: self.golfmatches[i].Players,
+                                            
+                                            isCurrentUserCreator: isCurrentUserCreator
+                                        });                
+                                    }     
+                                }
+
+                                this.events.map( (event) => {
+                                    event.editable = !self.isPast( event.start );
+                                    console.log(event);
+                                    return event;
+                                });
+                           
+                            }).then(()=>{
+                                callback( self.events );  
+                            });   
+              
+                
            
             },
             eventClick: ( event ) => self.eventClick( event ),
-               
-            editable: true,
-            handleWindowResize: true,           
            
+            editable: true,
+            handleWindowResize: true, 
             minTime: '07:30:00', // Start time for the calendar
             maxTime: '15:00:00', // End time for the calendar
-            columnFormat: {
-                week: 'ddd' // Only show day of the week names
-            },
             displayEventTime: false,
-            allDayText: 'Online/TBD',          
-             
-                
-          
-            //eventMouseover: (calEvent) => {
-            //    $(calEvent).popover({
-            //        title: event.name,
-            //        placement: 'right',
-            //        trigger: 'manual',
-            //        content: 'foo',
-            //        container: '#calendar'
-            //    }).popover('toggle');
-            //}
             
-               
+            eventMouseover: function(calEvent, jsEvent) {
+                var tooltip = '<div class="tooltipevent" style="width:200px;padding:10px;height:auto;background:#000;color:#fff;position:absolute;z-index:10001;">' + calEvent.title + '</div>';
+                $("body").append(tooltip);
+                $(this).mouseover(function(e) {
+                    $(this).css('z-index', 10000);
+                    $('.tooltipevent').fadeIn('500');
+                    $('.tooltipevent').fadeTo('10', 1.9);
+                }).mousemove(function(e) {
+                    $('.tooltipevent').css('top', e.pageY + 10);
+                    $('.tooltipevent').css('left', e.pageX + 20);
+                });
+            },
+
+            eventMouseout: function(calEvent, jsEvent) {
+                $(this).css('z-index', 8);
+                $('.tooltipevent').remove();
+            },
         });
 
 
@@ -304,8 +292,5 @@ export class Schedule {
         return moment( today ).isAfter( date );
     }
     
-    getGolfMatches() {
-        return this.golfMatchDataService.golfmatches
-               .then(golfmatches => this.golfmatches = _.sortBy(golfmatches, "GolfMatchId"));   
-    }
+    
 }

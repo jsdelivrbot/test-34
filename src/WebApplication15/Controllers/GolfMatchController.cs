@@ -39,20 +39,25 @@ namespace GolfConnector.Web.Controllers
             this.environment = environment;
             _db = db;
         }
-
         // GET: api/GolfMatch
-        [HttpGet]
-        public IEnumerable<GolfMatchDto> Get()
+        [HttpGet("daterange/{start}/{end}")]
+        public IEnumerable<GolfMatchDto> GetMatchesByDate(long start, long end)
         {
+            DateTime unixEpoch = DateTime.ParseExact("1970-01-01", "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+            DateTime convertedStart = unixEpoch.AddMilliseconds(start);
+            DateTime convertedEnd = unixEpoch.AddMilliseconds(end);
+
             // get the upcoming (current) golf matches
             var matches = _db.GolfMatches
-               .Where(s => DateTime.Parse(s.StartDate + " " + s.Time) >= DateTime.Now.AddMinutes(-5))
-               .OrderBy(s => s.GolfMatchDateIso).Select(AsGolfMatchDto).ToList();
+               .Where(s => DateTime.Parse(s.GolfMatchDateIso).ToLocalTime() >= convertedStart && DateTime.Parse(s.GolfMatchDateIso).ToLocalTime() <= convertedEnd)
+               .OrderBy(s => s.GolfMatchDateIso)
+               .Select(AsGolfMatchDto)
+               .ToList();
 
             foreach (var s in matches)
             {
-                s.Time = DateTime.Parse(s.Time).ToLocalTime().ToString();
-                s.StartDate = DateTime.Parse(s.StartDate).ToLocalTime().ToString();
+                s.Time = DateTime.Parse(s.Time).ToString("HH:mm");
+                s.StartDate = DateTime.Parse(s.StartDate).ToShortDateString();
                 s.GolfMatchDateIso = DateTime.Parse(s.GolfMatchDateIso).ToLocalTime().ToString();
 
                 var users = (from su in _db.GolfMatchPlayers
@@ -73,11 +78,70 @@ namespace GolfConnector.Web.Controllers
                     string bytes = "";
                     try
                     {
-                        bytes = Convert.ToBase64String(
-                            System.IO.File.ReadAllBytes(
-                                Path.Combine(environment.WebRootPath + "\\uploads", user.User.UserName + ".jpeg")));
+                        //bytes = Convert.ToBase64String(
+                        //    System.IO.File.ReadAllBytes(
+                        //        Path.Combine(environment.WebRootPath + "\\uploads", user.User.UserName + ".jpeg")));
 
-                        user.ImageBytes = "data:image/jpeg;base64," + bytes;
+                        //user.ImageBytes = "data:image/jpeg;base64," + bytes;
+
+                        if ((user.User.FirstName + " " + user.User.LastName) == s.UserName)
+                        {
+                            user.IsMatchCreator = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log.Error(ex.Message);
+                    }
+
+                }
+
+                s.Players = new List<GolfMatchPlayerDto>();
+                s.Players.AddRange(users);
+            }
+
+            return matches;
+        }
+
+
+        // GET: api/GolfMatch
+        [HttpGet]
+        public IEnumerable<GolfMatchDto> Get()
+        {
+            // get the upcoming (current) golf matches
+            var matches = _db.GolfMatches
+               .Where(s => DateTime.Parse(s.StartDate + " " + s.Time) >= DateTime.Now.AddMinutes(-5))
+               .OrderBy(s => s.GolfMatchDateIso).Select(AsGolfMatchDto).ToList();
+
+            foreach (var s in matches)
+            {
+                s.Time = DateTime.Parse(s.Time).ToString("HH:mm");
+                s.StartDate = DateTime.Parse(s.StartDate).ToShortDateString();
+                s.GolfMatchDateIso = DateTime.Parse(s.GolfMatchDateIso).ToLocalTime().ToString();
+
+                var users = (from su in _db.GolfMatchPlayers
+                             where su.GolfMatchId == s.GolfMatchId
+                             select new GolfMatchPlayerDto
+                             {
+                                 User = su.User,
+                                 DisplayName = su.User.FirstName + " " + su.User.LastName,
+                                 IsInMatch = true,
+                                 Handicap = su.User.Handicap,
+                                 InviteDate = su.InviteDate.Value,
+                                 InviteStatusName = su.InviteStatus.Name,
+
+                             }).ToList();
+
+                foreach (var user in users)
+                {
+                    string bytes = "";
+                    try
+                    {
+                        //bytes = Convert.ToBase64String(
+                        //    System.IO.File.ReadAllBytes(
+                        //        Path.Combine(environment.WebRootPath + "\\uploads", user.User.UserName + ".jpeg")));
+
+                        //user.ImageBytes = "data:image/jpeg;base64," + bytes;
 
                         if ((user.User.FirstName + " " + user.User.LastName) == s.UserName)
                         {
@@ -443,14 +507,14 @@ namespace GolfConnector.Web.Controllers
                 var createdByUser = userManager.FindByNameAsync(match.UserName).Result;
 
                 // get club id of selected club
-                var club = _db.Clubs.Where(c => c.Name == match.ClubName).Single();
+                var club = _db.Clubs.Where(c => c.Name == "BakerHill").Single();
                
                 var newGolfMatch = new GolfMatch()
                 {
                     GolfMatchDateIso = DateTime.Parse(match.StartDate + " " + match.Time).ToUniversalTime().ToString("o"),
                     StartDate = match.StartDate,
                     Time = DateTime.Parse(match.Time).ToString("HH:mm:ss"),
-                    NumberOfPlayers = match.NumberOfPlayers,
+                    NumberOfPlayers = 4,
                     NumberOfHoles = match.NumberOfHoles,
                     Comments = match.Comments,                   
                     ClubId = club.ClubId

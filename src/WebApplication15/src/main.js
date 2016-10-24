@@ -18,8 +18,8 @@ export function configure(aurelia) {
     aurelia.use.plugin('aurelia-validatejs');     
     aurelia.use.plugin('aurelia-dialog', config => {
         config.useDefaults();
-        //config.settings.lock = true;
-        //config.settings.centerHorizontalOnly = false;
+        config.settings.lock = false;
+        config.settings.centerHorizontalOnly = false;
         //config.settings.startingZIndex = 2;
     });
     aurelia.use.plugin('velocity-animate');
